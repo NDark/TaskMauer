@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class TaskBundleHelper 
 {
+	public static TaskBundle CreateABundleInstance()
+	{
+		TaskBundle ret = new TaskBundle();
+		TaskBundleHelper.TryInitalizeBundleInstance(ret);
+		return ret;
+	}
+
 	public static void TryInitalizeBundleInstance( TaskBundle budnle )
 	{
 		if (null == budnle.Data)

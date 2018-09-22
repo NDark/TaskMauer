@@ -3,17 +3,17 @@
 public class TaskData
 {
 	public int TaskID;
-	public string Title;
-	public string Assignee;
+	public string Title = string.Empty;
+	public string Assignee= string.Empty;
 	public int ProgressInt;
 	public float ProgressFloat;
-	public string Link;
+	public string Link= string.Empty;
 }
 
 [System.Serializable]
 public class TaskVisual
 {
-	public string PositionStr;
+	public string PositionStr= string.Empty;
 	public bool IsPin;
 }
 
@@ -29,7 +29,7 @@ public class TaskRelation
 public class TaskRelative
 {
 	public int ID;
-	public string Type;
+	public string Type= string.Empty;
 }
 
 [System.Serializable]
