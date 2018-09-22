@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class TaskDisplayManager : MonoBehaviour 
 {
+	
 	public GameObject m_Task3DParent;
 	public GameObject m_Task2DParent;
+	public Camera m_3DCamera ;
 
 	public GameObject m_Task3DPrefab ;
 	public GameObject m_Task2DPrefab ;
@@ -57,8 +59,16 @@ public class TaskDisplayManager : MonoBehaviour
 		TaskVisualObj visual = new TaskVisualObj();
 
 		visual.m_3DObj = GameObject.Instantiate(m_Task3DPrefab , m_Task3DParent.transform );
+
 		// init 2d 
 		visual.m_2DObj = GameObject.Instantiate( m_Task2DPrefab , m_Task2DParent.transform ) ;
+
+		RectTransform rect = visual.m_2DObj.GetComponent<RectTransform>();
+
+		CoordinateTools.UpdateRectFrom3DWorldPos( m_3DCamera
+			, visual.m_3DObj.transform.position 
+			, rect
+		);
 
 		m_TaskVisuals.Add(bundleData.Data.TaskID, visual);
 	}
