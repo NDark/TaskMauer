@@ -8,6 +8,7 @@ public class TaskDisplayManager : MonoBehaviour
 {
 	public GameObject m_TaskParent;
 	public GameObject m_Task3DPrefab ;
+	public GameObject m_Task2DPrefab ;
 
 	void Awake() 
 	{
