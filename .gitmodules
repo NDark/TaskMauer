@@ -1,0 +1,4 @@
+[submodule "ClientProject/Assets/ndInfra/UnityTools"]
+	path = ClientProject/Assets/ndInfra/UnityTools
+	url = https://github.com/NDark/ndinfrastructure.git
+	branch = F_UnityTools
