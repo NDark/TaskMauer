@@ -64,11 +64,8 @@ public class TaskDisplayManager : MonoBehaviour
 		visual.m_2DObj = GameObject.Instantiate( m_Task2DPrefab , m_Task2DParent.transform ) ;
 
 		RectTransform rect = visual.m_2DObj.GetComponent<RectTransform>();
-
-		CoordinateTools.UpdateRectFrom3DWorldPos( m_3DCamera
-			, visual.m_3DObj.transform.position 
-			, rect
-		);
+		var task2dupdate = visual.m_2DObj.AddComponent<Task2DUpdateWith3D>();
+		task2dupdate.Setup(visual.m_3DObj, m_3DCamera);
 
 		m_TaskVisuals.Add(bundleData.Data.TaskID, visual);
 	}
