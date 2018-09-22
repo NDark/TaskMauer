@@ -25,7 +25,7 @@ public class TaskDisplayManager : MonoBehaviour
 	void Start () 
 	{
 		CalculateUnAssignedVisualTask();
-		
+		CalculateCameraZoomToAll();
 	}
 	
 	// Update is called once per frame
@@ -155,6 +155,7 @@ public class TaskDisplayManager : MonoBehaviour
 
 		visual.m_2DHelper = obj2d.AddComponent<TaskVidual2DObjectHelper>();
 		visual.m_2DHelper.Setup();
+		visual.m_2DHelper.UpdateLinkURL(bundleData.Data.Link);
 		visual.m_2DHelper.UpdateTitle(bundleData.Data.Title);
 
 		var task2dupdate = obj2d.AddComponent<Task2DUpdateWith3D>();
@@ -191,6 +192,52 @@ public class TaskDisplayManager : MonoBehaviour
 		}
 	}
 
+	void CalculateCameraZoomToAll()
+	{
+		Vector3 sum = Vector3.zero;
+		if (m_TaskVisuals.Count <= 0 )
+		{
+			return;
+		}
+		float minX = float.MaxValue ;
+		float maxX = float.MinValue ;
+		float minY = float.MaxValue ;
+		float maxY = float.MinValue ;
+
+		int count = m_TaskVisuals.Count;
+		var taskVisual = m_TaskVisuals.GetEnumerator();
+		while (taskVisual.MoveNext())
+		{
+			var obj = taskVisual.Current.Value;
+			Vector3 pos = obj.m_3DObj.transform.position;
+			if (pos.x > maxX)
+			{
+				maxX = pos.x;
+			}
+			if (pos.x < minX)
+			{
+				minX = pos.x;
+			}
+
+			if (pos.y > maxY)
+			{
+				maxY = pos.y;
+			}
+			if (pos.y < minY)
+			{
+				minY = pos.y;
+			}
+
+			sum += pos;
+		}
+		sum /= count;
+
+		// check zoom
+		sum.z = m_3DCamera.transform.position.z;
+
+
+		m_3DCamera.transform.position = sum;
+	}
 
 	public class TaskVisualObj
 	{
