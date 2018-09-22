@@ -1,0 +1,17 @@
+.DS_Store
+
+/ClientProject/BIN
+/ClientProject/reallyreally
+/ClientProject/Temp
+/ClientProject/Library
+/ClientProject/*.sln
+/ClientProject/*.userprefs
+/ClientProject/*.csproj
+/ClientProject/*.apk
+/ClientProject/AssetBundles
+/ClientProject/Assets/StreamingAssets
+/ClientProject/.vs/ClientProject/v14/*.suo
+
+
+/KeyStore/*.keystore
+/ClientProject/s_ReplayData.txt
