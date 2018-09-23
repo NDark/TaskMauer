@@ -228,13 +228,35 @@ public class TaskDisplayManager : MonoBehaviour
 				minY = pos.y;
 			}
 
-			sum += pos;
+		
 		}
-		sum /= count;
+		sum.x = (maxX + minX) * 0.5f;
+		sum.y = (maxY + minY) * 0.5f;
 
+		float distanceInX = maxX - minX;
+		float distanceInY = maxY - minY;
+
+		float maxLength = (distanceInX>distanceInY) ?distanceInX : distanceInY;
 		// check zoom
-		sum.z = m_3DCamera.transform.position.z;
+		float lenghHalfBall = 0.5f;
+		float suggestedRatio = 1.1f;
+		float suggestLength =( maxLength + lenghHalfBall*2) * suggestedRatio ;
+		var suggestedFarDistance = suggestLength * 0.5f / Mathf.Tan(m_3DCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
 
+		float nearPlane = m_3DCamera.nearClipPlane * 1.1f;
+		if( suggestedFarDistance < nearPlane )
+		{
+			suggestedFarDistance = nearPlane;
+		}
+
+		float farPlane = m_3DCamera.farClipPlane * 0.9f;
+		if( suggestedFarDistance > farPlane )
+		{
+			suggestedFarDistance = farPlane;
+		}
+
+
+		sum.z = -1 * suggestedFarDistance ;
 
 		m_3DCamera.transform.position = sum;
 	}
