@@ -51,18 +51,14 @@ public class TaskDisplayManager : MonoBehaviour
 		return null;
 	}
 
-	Vector3 CalculatePosition( string assignee )
+	float CalculatePositionY( string assignee )
 	{
-		Vector2 ret = new Vector2();
 		const float rowHeight = 1.0f ;
 
 		int indexInTheArray = m_ExistAssignee.IndexOf(assignee);
 		int assigneeIndex = (string.Empty != assignee && -1 != indexInTheArray) ? indexInTheArray+1 : 0 ;
-		float y = rowHeight * assigneeIndex ;
-
-
-		ret.y = y;
-		return ret;
+		float y =  rowHeight * assigneeIndex ;
+		return y;
 	}
 
 	void InitalizeLocalTestData()
@@ -174,20 +170,105 @@ public class TaskDisplayManager : MonoBehaviour
 		m_TaskData.Add(bundleData.Data.TaskID, bundleData);
 	}
 
+
+	void SortVisualTaskInARow( List<int> sortingIndexInARow )
+	{
+		for (int i = 0; i < sortingIndexInARow.Count; ++i)
+		{
+			for( int j = i+1 ; j < sortingIndexInARow.Count ; ++j )
+			{
+				TaskBundle taskI = m_TaskData[sortingIndexInARow[i]];
+				TaskBundle taskJ = m_TaskData[sortingIndexInARow[j]];
+
+				// check time 
+				if (taskI.Data.TimeStamp > taskJ.Data.TimeStamp)
+				{
+				
+				}
+				else if (taskI.Data.TimeStamp == taskJ.Data.TimeStamp)
+				{
+					// check relation
+				}
+
+			}
+		}
+			
+	}
+
 	void CalculateUnAssignedVisualTask()
 	{
+		// calculate the space in sortedForEachYRow
+		Dictionary<int,float> spaceInXMap = new Dictionary<int, float>() ;
+		var spaceTaskIndex = m_TaskData.GetEnumerator();
+		while (spaceTaskIndex.MoveNext())
+		{
+			var data = spaceTaskIndex.Current.Value;
+			// calculate space of this task
+			spaceInXMap.Add(data.Data.TaskID, 1);
+		}
+
+		// calculate y
+		List<TaskBundle> unPositionTasks = new List<TaskBundle>() ;
 		var taskData = m_TaskData.GetEnumerator();
 		while (taskData.MoveNext())
 		{
 			var data = taskData.Current.Value;
 			if (data.Visual.PositionStr == string.Empty )
 			{
-				Vector3 pos = CalculatePosition(data.Data.Assignee);
-				TaskVisualObj visual = TryFindTaskVisual(data.Data.TaskID);
-				if (null != visual)
+				unPositionTasks.Add(data);
+			}
+		}
+
+		// calculate y
+		Dictionary<int,float> yMap = new Dictionary<int, float>() ;
+		List<float> yList = new List<float>() ;
+		var unPosI = unPositionTasks.GetEnumerator();
+		while (unPosI.MoveNext())
+		{
+			float y = CalculatePositionY(unPosI.Current.Data.Assignee);
+			yMap.Add(unPosI.Current.Data.TaskID, y);
+			if (-1 != yList.IndexOf(y))
+			{
+				yList.Add(y);
+			}
+		}
+
+		Dictionary<float,List <int> > sortedForEachYRow = new Dictionary<float, List<int>>();
+		// for each y 
+		var yValueIndex = yList.GetEnumerator();
+		while (yValueIndex.MoveNext())
+		{
+			List<int> taskInTheSameY = new List<int>();
+			var yMapIndex = yMap.GetEnumerator();
+			while (yMapIndex.MoveNext())
+			{
+				if (yMapIndex.Current.Value == yValueIndex.Current)
 				{
-					visual.m_3DObj.transform.position = pos;
+					taskInTheSameY.Add(yMapIndex.Current.Key);
 				}
+			}
+
+			SortVisualTaskInARow(taskInTheSameY);
+			sortedForEachYRow.Add(yValueIndex.Current, taskInTheSameY);
+		}
+
+	
+		foreach (var row in sortedForEachYRow.Values)
+		{
+			float tempX = 0;
+			foreach (var taskID in row )
+			{
+				// calculate the size of each task 
+				TaskBundle task = m_TaskData[taskID];
+				float spaceInX = spaceInXMap[taskID];
+
+				TaskVisualObj visual = TryFindTaskVisual(taskID);
+				float yValue = yMap[ taskID ] ;
+				if(null!= visual)
+				{
+					visual.m_3DObj.transform.position = new Vector3( tempX , yValue , 0 ) ;
+				}
+				tempX += spaceInX;
 			}
 		}
 	}
