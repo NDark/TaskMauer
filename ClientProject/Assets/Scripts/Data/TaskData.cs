@@ -5,6 +5,7 @@ public class TaskData
 	public int TaskID;
 	public string Title = string.Empty;
 	public string Assignee= string.Empty;
+	public long TimeStamp;
 	public int ProgressInt;
 	public float ProgressFloat;
 	public string Link= string.Empty;
@@ -40,4 +41,3 @@ public class TaskBundle
 	public TaskRelation Relation ;
 	public TaskRelative Relative ;
 }
-
