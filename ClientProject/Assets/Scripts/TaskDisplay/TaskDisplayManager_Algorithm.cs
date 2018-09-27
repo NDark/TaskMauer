@@ -133,7 +133,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 				if(null!= visual && null != visualParent )
 				{
 					visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
-					visual.m_3DObj.transform.localPosition = new Vector3( tempX , -0.5f , 1 ) ;
+					visual.m_3DObj.transform.localPosition = new Vector3( tempX , -1 , 1 ) ;
 				}
 
 				tempX += calculator.XSpace;
@@ -155,7 +155,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 					if (false == m_TaskCalculator[data.Data.TaskID].IsSetPosition)
 					{
 						int taskParenID = m_TaskCalculator[data.Data.TaskID].Bundle.Relation.ParentID;
-						if (m_TaskCalculator[data.Data.TaskID].RowIndex == rowIndex.Current && 0 == taskParenID )
+						if (m_TaskCalculator[data.Data.TaskID].RowIndex == rowIndex.Current 
+							&& 0 == taskParenID )
 						{
 							taskInTheSameRow.Add(data.Data.TaskID);
 						}
