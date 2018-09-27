@@ -62,8 +62,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 	void InitalizeLocalTestData()
 	{
 		int id = 0 ;
-
-
 		/*
 		### Task1 
 		### Task2 Member1
@@ -74,10 +72,14 @@ public partial class TaskDisplayManager : MonoBehaviour
 		### Task7 PositionStr
 		### Task8 IsPin
 		### Task9 follow Task4
+
 		*/
+		++id; // zero is not a valid taskid
+		int task1ID = 0 ;
 		{
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
+			task1ID = bundleData.Data.TaskID;
 			bundleData.Data.Title = "Task1";
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
@@ -94,10 +96,11 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task3";
-			bundleData.Relation.ParentID = 0;
+			bundleData.Relation.ParentID = task1ID;// task1 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
+
 		{
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
