@@ -76,6 +76,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 		*/
 		++id; // zero is not a valid taskid
 		int task1ID = 0 ;
+		int task3ID = 0 ;
+
 		{
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
@@ -94,7 +96,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		{
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
-			bundleData.Data.TaskID = id++;
+			task3ID = bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task3";
 			bundleData.Relation.ParentID = task1ID;// task1 
 			CheckAndCreateTaskObj(bundleData);
@@ -125,6 +127,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.Title = "Task6";
 			bundleData.Data.Assignee = "Member3";
 			CheckAndCreateTaskObj(bundleData);
+			AddTask(bundleData);
+		}
+
+
+		{
+			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
+			bundleData.Data.TaskID = id++;
+			bundleData.Data.Title = "Task7";
+			CheckAndCreateTaskObj(bundleData);
+			bundleData.Relation.ParentID = task3ID;// task3ID 
 			AddTask(bundleData);
 		}
 	}

@@ -21,6 +21,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 			}
 		}
 
+		// calculate the parent depth
+		CalculateParentDepth(m_TaskCalculator) ;
+
 		// calculate the XSpace for each task
 		{
 			var taskJ = m_TaskData.GetEnumerator();
@@ -133,7 +136,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 				if(null!= visual && null != visualParent )
 				{
 					visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
-					visual.m_3DObj.transform.localPosition = new Vector3( tempX , -1 , 1 ) ;
+					visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
 				}
 
 				tempX += calculator.XSpace;
@@ -227,6 +230,71 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	}
 
+	void CalculateParentDepth( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
+	{
+		int maxDepth = 0;
+		// find the depth of each task (not consider children node)
+		var taskJ = taskCalculaor.GetEnumerator();
+		while (taskJ.MoveNext())
+		{
+			var calculator = taskJ.Current.Value;
+			calculator.DepthToRoot = FindParentDepthByThisNode( taskCalculaor, taskJ.Current.Key ) ;
+			if (calculator.DepthToRoot > maxDepth)
+			{
+				maxDepth = calculator.DepthToRoot;
+			}
+		}
+
+		var taskK = taskCalculaor.GetEnumerator();
+		while (taskK.MoveNext())
+		{
+			var calculator = taskK.Current.Value;
+
+			var tempDepth = calculator.DepthToRoot;
+			var bottomDepth = calculator.DepthToRoot+1;
+
+			// try increment parents' depth
+			var tempTask = calculator ;
+			while (0 != tempTask.Bundle.Relation.ParentID)
+			{
+
+				var parent = taskCalculaor[tempTask.Bundle.Relation.ParentID];
+				if (tempDepth-1 >= parent.DepthToRoot)
+				{
+					parent.DepthToRoot = tempDepth -1;
+					parent.ParentDepth = bottomDepth - parent.DepthToRoot;
+				}
+
+				--tempDepth;
+
+				tempTask = parent;
+			}
+
+		}
+
+		var taskL = taskCalculaor.GetEnumerator();
+		while (taskL.MoveNext())
+		{
+			var calculator = taskL.Current.Value;
+			calculator.YSpace = calculator.ParentDepth + 1;
+			// Debug.Log( taskL.Current.Key + " calculator.DepthToRoot=" + calculator.DepthToRoot);
+			// Debug.Log( taskL.Current.Key + " calculator.ParentDepth=" + calculator.ParentDepth);
+		}
+	}
+
+
+	int FindParentDepthByThisNode( Dictionary<int, TaskPositionHelper > taskCalculaor , int id )
+	{
+		int ret = 0 ;
+
+		TaskPositionHelper thisTask = taskCalculaor[id];
+		while ( 0 != thisTask.Bundle.Relation.ParentID )
+		{
+			thisTask = taskCalculaor[thisTask.Bundle.Relation.ParentID];
+			++ret;
+		}
+		return ret ;
+	}
 
 	Dictionary<int, TaskPositionHelper > m_TaskCalculator = new Dictionary<int, TaskPositionHelper>() ;
 
@@ -239,6 +307,7 @@ public class TaskPositionHelper
 	public float XSpace = 1 ;
 	public float YSpace = 1 ;
 	public int RowIndex = 0;// YIndex
+	public int DepthToRoot = 0;
 	public int ParentDepth = 0;
 
 	public bool IsSetPosition = false ;
