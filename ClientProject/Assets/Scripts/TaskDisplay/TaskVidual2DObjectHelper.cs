@@ -7,10 +7,11 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 {
 	public void PressButton()
 	{
-		Debug.LogWarning("string.Empty != m_LinkURL");
 		if (string.Empty != m_LinkURL)
 		{
-			
+			Debug.LogWarning("m_LinkURL"+m_LinkURL);
+			m_OpenBrowser.m_Url = m_LinkURL;
+			m_OpenBrowser.OpenBrower();
 		}
 	}
 
@@ -18,6 +19,7 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 	{
 		m_LinkURL = url;
 	}
+
 	public void UpdateTitle( string content )
 	{
 		if (m_Title)
@@ -26,10 +28,20 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 		}
 	}
 
+	public void UpdateAssignee( string content )
+	{
+		if (m_Assignee)
+		{
+			m_Assignee.text = content;
+		}
+	}
+
 	public void Setup()
 	{
 		m_Title = UnityFind.ComponentFind<Text>(this.transform, "Title");
+		m_Assignee = UnityFind.ComponentFind<Text>(this.transform, "Assignee");
 		m_LinkButton = UnityFind.ComponentFind<Button>(this.transform, "LinkButton");
+		m_OpenBrowser = m_LinkButton.gameObject.AddComponent<OnClickOpenBrower>();
 		m_LinkButton.onClick.AddListener(delegate {PressButton();} );
 		m_Initialzied = true;
 	}
@@ -46,6 +58,8 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 
 	string m_LinkURL = string.Empty ;
 	Button m_LinkButton = null ;
+	OnClickOpenBrower m_OpenBrowser =null; 
 	Text m_Title = null ;
+	Text m_Assignee = null ;
 	bool m_Initialzied = false ;
 }
