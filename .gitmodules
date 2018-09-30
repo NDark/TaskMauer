@@ -2,3 +2,7 @@
 	path = ClientProject/Assets/ndInfra/UnityTools
 	url = https://github.com/NDark/ndinfrastructure.git
 	branch = F_UnityTools
+[submodule "ClientProject/Assets/ndInfra/Timer"]
+	path = ClientProject/Assets/ndInfra/Timer
+	url = https://github.com/NDark/ndinfrastructure.git
+	branch = F_Timer

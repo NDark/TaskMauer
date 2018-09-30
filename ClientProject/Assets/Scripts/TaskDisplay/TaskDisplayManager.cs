@@ -6,7 +6,8 @@ using UnityEngine;
 
 public partial class TaskDisplayManager : MonoBehaviour 
 {
-	
+	const float CONST_CLICK_SEC = 0.3f;
+	const float CONST_PAN_SPEED = 0.5f ;
 	public GameObject m_Task3DParent;
 	public GameObject m_Task2DParent;
 	public Camera m_3DCamera ;
@@ -19,6 +20,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 #if ENABLE_LOCAL_DATA		
 		InitalizeLocalTestData();
 #endif // ENABLE_LOCAL_DATA
+
+		m_MouseIsDownTimer.IntervalSec = CONST_CLICK_SEC;
 	}
 
 	// Use this for initialization
@@ -29,7 +32,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+	{
+		CheckInput();
 		
 	}
 
@@ -259,6 +264,52 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		m_3DCamera.transform.position = sum;
 	}
+
+	void CheckInput()
+	{
+		if (m_MouseIsDownTimer.IsActive 
+			&& Input.GetMouseButtonUp(0)
+			&& !m_MouseIsDownTimer.IsReady(Time.time ) 
+		)
+		{
+			MouseClick( Input.mousePosition );
+		}
+
+		if (m_MouseIsDownTimer.IsActive
+			&& m_MouseIsDownTimer.IsReady(Time.time ))
+		{
+			MouseMove(Input.mousePosition);
+		}
+
+		if( Input.GetMouseButtonDown(0))
+		{
+			m_MouseIsDownTimer.Rewind(Time.time);
+
+		}
+
+		bool mouseButtonIsDown = Input.GetMouseButton(0);
+		m_MouseIsDownTimer.Active(mouseButtonIsDown);
+
+		if (mouseButtonIsDown)
+		{
+			m_InputMousePositionPrevious = Input.mousePosition;
+		}
+	}
+
+	void MouseMove(Vector3 inputMousePosition)
+	{
+		Vector3 delta = inputMousePosition - m_InputMousePositionPrevious;
+		m_3DCamera.transform.Translate(-1 * CONST_PAN_SPEED * delta* Time.deltaTime );
+	}
+
+	void MouseClick( Vector3 inputMousePosition )
+	{
+		Debug.LogWarning("MouseClick");
+	}
+
+	bool m_MouseIsDown = false ;
+	CountDownTimer m_MouseIsDownTimer = new CountDownTimer();
+	Vector3 m_InputMousePositionPrevious = Vector3.zero ;
 
 	public class TaskVisualObj
 	{
