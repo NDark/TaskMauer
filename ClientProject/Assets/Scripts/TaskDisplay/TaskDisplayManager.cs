@@ -14,6 +14,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	public GameObject m_Task3DPrefab ;
 	public GameObject m_Task2DPrefab ;
+	public Task2DUpdateWith3D m_SelectionHelper ;
 
 	void Awake() 
 	{
@@ -170,6 +171,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		TaskVisualObj visual = new TaskVisualObj();
 
 		visual.m_3DObj = GameObject.Instantiate(m_Task3DPrefab , m_Task3DParent.transform );
+		visual.m_3DObj.name = bundleData.Data.TaskID.ToString();
 
 		// init 2d 
 		var obj2d = GameObject.Instantiate( m_Task2DPrefab , m_Task2DParent.transform ) ;
@@ -304,10 +306,79 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	void MouseClick( Vector3 inputMousePosition )
 	{
-		Debug.LogWarning("MouseClick");
+		if (0!=m_SelectedObjTaskID)
+		{
+			m_SelectedObjTaskID = 0;
+			ShowSelectionGUI( false );
+		}
+		else
+		{
+			// check click
+			m_SelectedObjTaskID = CheckClickVisual( Input.mousePosition ) ;
+			TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
+			if (null != visual)
+			{
+				
+				ShowSelectionGUI(true);
+				UpdateSelectionGUI(visual);
+			}
+		}
 	}
 
-	bool m_MouseIsDown = false ;
+	int CheckClickVisual( Vector3 inputMousePos )
+	{
+		int ret = 0;
+		var ray = m_3DCamera.ScreenPointToRay(inputMousePos);
+		var hits = Physics.RaycastAll(ray);
+		if (hits.Length > 0)
+		{
+			for (int i = 0; i < hits.Length; ++i)
+			{
+				
+				int id = 0;
+				if (int.TryParse(hits[i].collider.gameObject.name, out id))
+				{
+					
+
+					if (m_TaskVisuals.ContainsKey(id))
+					{
+						ret = id;	
+						return ret;
+					}
+
+				}
+			}
+		}
+		return ret ;
+	}
+
+	void ShowSelectionGUI( bool show )
+	{
+		if (m_SelectionHelper)
+		{
+			m_SelectionHelper.gameObject.SetActive(show);
+			m_SelectionHelper.enabled = show;
+		}
+
+		if ( false == show )
+		{
+			UpdateSelectionGUI(null);
+		}
+	}
+
+	void UpdateSelectionGUI( TaskVisualObj visual )
+	{
+		if (null == visual)
+		{
+			m_SelectionHelper.m_Target = null ;
+			return;
+		}
+		m_SelectionHelper.m_Camera = this.m_3DCamera;
+		m_SelectionHelper.m_Target = visual.m_3DObj;
+
+	}
+
+	int m_SelectedObjTaskID = 0 ;
 	CountDownTimer m_MouseIsDownTimer = new CountDownTimer();
 	Vector3 m_InputMousePositionPrevious = Vector3.zero ;
 
