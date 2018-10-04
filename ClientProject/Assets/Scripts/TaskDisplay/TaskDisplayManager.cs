@@ -6,6 +6,8 @@ using UnityEngine;
 
 public partial class TaskDisplayManager : MonoBehaviour 
 {
+	const float CONST_CAMERA_NEAREST_Z = -1;
+	const float CONST_ZOOM_SPEED = 1.0f;
 	const float CONST_CLICK_SEC = 0.3f;
 	const float CONST_PAN_SPEED = 0.5f ;
 	public GameObject m_Task3DParent;
@@ -30,6 +32,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	{
 		CalculateUnAssignedVisualTask();
 		CalculateCameraZoomToAll();
+		ShowSelectionGUI(false);
 	}
 	
 	// Update is called once per frame
@@ -289,6 +292,11 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		}
 
+		if (Input.mouseScrollDelta.y != 0)
+		{
+			CameraZoomIn(Input.mousePosition, Input.mouseScrollDelta.y );
+		}
+
 		bool mouseButtonIsDown = Input.GetMouseButton(0);
 		m_MouseIsDownTimer.Active(mouseButtonIsDown);
 
@@ -375,6 +383,20 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		m_SelectionHelper.m_Camera = this.m_3DCamera;
 		m_SelectionHelper.m_Target = visual.m_3DObj;
+
+	}
+
+	void CameraZoomIn(Vector3 inputMousePosition , float zoomInValue )
+	{
+		Ray ray = m_3DCamera.ScreenPointToRay(inputMousePosition);
+
+		Vector3 zoomVec = ray.direction * zoomInValue * CONST_ZOOM_SPEED;
+		Vector3 destination = m_3DCamera.transform.position + zoomVec;
+		if (destination.z > CONST_CAMERA_NEAREST_Z)
+		{
+			return;
+		}
+		m_3DCamera.transform.Translate(zoomVec);
 
 	}
 
