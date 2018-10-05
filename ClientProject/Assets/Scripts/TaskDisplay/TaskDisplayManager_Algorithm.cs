@@ -115,6 +115,13 @@ public partial class TaskDisplayManager : MonoBehaviour
 					}
 				}
 
+				if (taskInTheSameParentID.Count > 0)
+				{
+					TaskVisualObj visualNode = TryFindTaskVisual(parentIDEnum.Current);
+					TaskVidual2DObjectHelper visual = visualNode.m_2DHelper;
+					visual.SetupParentPanel(this,parentIDEnum.Current,taskInTheSameParentID );
+				}
+
 				SortVisualTaskInARow(taskInTheSameParentID);
 
 				sortedForEachParent.Add(parentIDEnum.Current, taskInTheSameParentID);

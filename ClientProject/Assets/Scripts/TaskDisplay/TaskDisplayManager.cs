@@ -17,6 +17,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	public GameObject m_Task3DPrefab ;
 	public GameObject m_Task2DPrefab ;
 	public Task2DUpdateWith3D m_SelectionHelper ;
+	public AddTaskInterfaceHelper m_AddTaskInterfaceHelper;
 
 	void Awake() 
 	{
@@ -27,22 +28,43 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_MouseIsDownTimer.IntervalSec = CONST_CLICK_SEC;
 	}
 
+	public void AddTask()
+	{
+		Debug.LogWarning("AddTask");
+
+		{
+			int maxID = int.MinValue;
+			foreach( var i in m_TaskData.Keys )
+			{
+				if (i > maxID)
+				{
+					maxID = i;
+				}
+			}
+
+			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
+			bundleData.Data.TaskID = maxID+1;
+			bundleData.Data.Title = m_AddTaskInterfaceHelper.m_TitleInput.text;
+			bundleData.Data.Assignee = m_AddTaskInterfaceHelper.m_AssigneeInput.text;
+
+			CheckAndCreateTaskObj(bundleData);
+			AddTask(bundleData);
+		}
+
+		m_AddTaskInterfaceHelper.gameObject.SetActive(false);
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
+		SetupStructrue();
+
 		CalculateUnAssignedVisualTask();
 		CalculateCameraZoomToAll();
-		ShowSelectionGUI(false);
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-		CheckInput();
-		
+
 	}
 
-	TaskVisualObj TryFindTaskVisual( int id )
+	public TaskVisualObj TryFindTaskVisual( int id )
 	{
 		if (m_TaskVisuals.ContainsKey(id))
 		{
@@ -50,6 +72,15 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		return null;
 	}
+
+	// Update is called once per frame
+	void Update () 
+	{
+		CheckInput();
+		
+	}
+
+
 
 	TaskBundle TryFindTaskData( int id )
 	{
@@ -151,7 +182,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task7";
 			bundleData.Data.Link = "www.google.com.tw";
-			bundleData.Relation.ParentID = task3ID;// task3ID 
+			// bundleData.Relation.ParentID = task3ID;// task3ID 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -398,6 +429,14 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		m_3DCamera.transform.Translate(zoomVec);
 
+	}
+
+	void SetupStructrue()
+	{
+
+		m_AddTaskInterfaceHelper.OnPressAddButton += AddTask;
+
+		ShowSelectionGUI(false);
 	}
 
 	int m_SelectedObjTaskID = 0 ;
