@@ -33,9 +33,24 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 				// calculate space of this task. 
 				// based on the children count.
-				float x = 1 ;
+				float childNum = 0 ;
 
-				m_TaskCalculator[data.Data.TaskID].XSpace = x ;
+				var taskChild = m_TaskData.GetEnumerator();
+				while (taskChild.MoveNext())
+				{
+					var dataChild = taskChild.Current.Value;
+
+					if (dataChild != data && dataChild.Relation.ParentID == data.Data.TaskID )
+					{
+						++childNum;
+					}
+				}
+
+				if (childNum < 2)// child number 0 and 1 is treated as 0 (size 1)
+				{
+					childNum = 0; 
+				}
+				m_TaskCalculator[data.Data.TaskID].XSpace = childNum + 1 ;
 			}
 		}
 

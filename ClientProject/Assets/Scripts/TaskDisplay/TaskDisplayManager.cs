@@ -209,6 +209,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		// init 2d 
 		var obj2d = GameObject.Instantiate( m_Task2DPrefab , m_Task2DParent.transform ) ;
+		obj2d.name = visual.m_3DObj.name;
 
 		visual.m_2DHelper = obj2d.AddComponent<TaskVidual2DObjectHelper>();
 		visual.m_2DHelper.Setup();
