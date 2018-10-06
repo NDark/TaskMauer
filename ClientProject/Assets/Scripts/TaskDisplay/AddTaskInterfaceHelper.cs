@@ -7,6 +7,9 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 {
 	public InputField m_TitleInput ;
 	public InputField m_AssigneeInput ;
+	public InputField m_LinkInput ;
+	public InputField m_ParentInput ;
+
 
 	public System.Action OnPressAddButton = new System.Action( () => {} );
 
