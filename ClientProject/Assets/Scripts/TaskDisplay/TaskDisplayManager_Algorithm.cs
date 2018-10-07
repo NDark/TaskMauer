@@ -25,10 +25,23 @@ public partial class TaskDisplayManager : MonoBehaviour
 			if (0 != bundle.Relation.ParentID)
 			{
 				// sor
-				sortingArray = CreateSortingArrayForParentIDSet(m_TaskData , bundle.Relation.ParentID );
+				sortingArray = CreateSortingArrayForParentIDSet(m_TaskData, bundle.Relation.ParentID);
+				SetParentAndLocalPositionInArray(m_TaskData, m_TaskCalculator, sortingArray);
+			}
+			else
+			{
+				sortingArray = CreateSortingArrayForEachRowIndex(m_TaskData , m_TaskCalculator , helper.RowIndex );
+				if (!m_RowToPosY.ContainsKey(helper.RowIndex))
+				{
+					m_RowToPosY.Add( helper.RowIndex , m_RowMaxYNow );
+
+					float maxYSpace = 0;
+					SetLocalPositionInArray( sortingArray , m_RowMaxYNow , out maxYSpace);
+					m_RowMaxYNow += maxYSpace;
+
+				}
 			}
 		}
-		// try increment parents' depth
 
 	}
 
@@ -258,7 +271,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		Dictionary<int,List <int> > sortedForEachYRow = new Dictionary<int, List<int>>();
 
-
 		// for each row index  
 		{
 			var rowIndex = m_RowIndiceSet.GetEnumerator();
@@ -273,14 +285,14 @@ public partial class TaskDisplayManager : MonoBehaviour
 		// according to each sorted list, assigned position
 		foreach (var row in sortedForEachYRow)
 		{
-			float maxYSpace = 0;
-
 			m_RowToPosY.Add(row.Key, tempY);
 
+			float maxYSpace = 0;
 			SetLocalPositionInArray( row.Value , tempY , out maxYSpace);
-
 			tempY += maxYSpace;
 		}
+		m_RowMaxYNow = tempY;
+
 	}
 
 
@@ -420,6 +432,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	List<int> m_RowIndiceSet = new List<int>();
 	Dictionary<int,float> m_RowToPosY = new Dictionary<int, float>() ;
+	float m_RowMaxYNow = 0.0f ;
 }
 
 [System.Serializable]
