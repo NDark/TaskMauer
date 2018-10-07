@@ -4,20 +4,28 @@ using UnityEngine;
 
 public partial class TaskDisplayManager : MonoBehaviour 
 {
+	void AddTaskPositionHelper( TaskBundle bundle )
+	{
+		if (null != bundle)
+		{
+			m_TaskCalculator.Add(bundle.Data.TaskID, new TaskPositionHelper
+				{
+					Bundle = bundle
+				});
+		}
+	}
+
 	void CalculateUnAssignedVisualTask()
 	{
 
 		// create helper for all tasks.
 		m_TaskCalculator.Clear() ;
+
 		{
 			var taskI = m_TaskData.GetEnumerator();
 			while (taskI.MoveNext())
 			{
-				var data = taskI.Current.Value;
-				m_TaskCalculator.Add(data.Data.TaskID, new TaskPositionHelper
-					{
-						Bundle = data
-					});
+				AddTaskPositionHelper(taskI.Current.Value);
 			}
 		}
 
@@ -252,67 +260,81 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	}
 
-	void CalculateParentDepth( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
+	void CalculateAllDepthToRoot( Dictionary<int, TaskPositionHelper > taskCalculaor  ) 
 	{
-		int maxDepth = 0;
 		// find the depth of each task (not consider children node)
 		var taskJ = taskCalculaor.GetEnumerator();
 		while (taskJ.MoveNext())
 		{
 			var calculator = taskJ.Current.Value;
 			calculator.DepthToRoot = FindParentDepthByThisNode( taskCalculaor, taskJ.Current.Key ) ;
-			if (calculator.DepthToRoot > maxDepth)
-			{
-				maxDepth = calculator.DepthToRoot;
-			}
 		}
+	}
 
+	void CalculateParentDepthTilParent( Dictionary<int, TaskPositionHelper > taskCalculaor
+		, TaskPositionHelper helper , int tempDepth ) 
+	{
+		var tempTask = helper ;
+
+		var bottomDepth = tempDepth+1;
+
+		while (0 != tempTask.Bundle.Relation.ParentID)
+		{
+
+			var parent = taskCalculaor[tempTask.Bundle.Relation.ParentID];
+			if (tempDepth-1 >= parent.DepthToRoot)
+			{
+				parent.DepthToRoot = tempDepth -1;
+				parent.ParentDepth = bottomDepth - parent.DepthToRoot;
+			}
+
+			--tempDepth;
+
+			tempTask = parent;
+		}
+	}
+
+	void CalculateParentDepthTilParent( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
+	{
 		var taskK = taskCalculaor.GetEnumerator();
 		while (taskK.MoveNext())
 		{
 			var calculator = taskK.Current.Value;
 
-			var tempDepth = calculator.DepthToRoot;
-			var bottomDepth = calculator.DepthToRoot+1;
-
 			// try increment parents' depth
-			var tempTask = calculator ;
-			while (0 != tempTask.Bundle.Relation.ParentID)
-			{
-
-				var parent = taskCalculaor[tempTask.Bundle.Relation.ParentID];
-				if (tempDepth-1 >= parent.DepthToRoot)
-				{
-					parent.DepthToRoot = tempDepth -1;
-					parent.ParentDepth = bottomDepth - parent.DepthToRoot;
-				}
-
-				--tempDepth;
-
-				tempTask = parent;
-			}
-
+			CalculateParentDepthTilParent( taskCalculaor , calculator , calculator.DepthToRoot ) ;
 		}
+	}
+
+	void CalculateYSpaceFromParentDepth( TaskPositionHelper helper ) 
+	{
+		helper.YSpace = helper.ParentDepth + 1;
+	}
+
+
+	void CalculateParentDepth( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
+	{
+		CalculateAllDepthToRoot(taskCalculaor);
+
+		CalculateParentDepthTilParent(taskCalculaor);
 
 		var taskL = taskCalculaor.GetEnumerator();
 		while (taskL.MoveNext())
 		{
 			var calculator = taskL.Current.Value;
-			calculator.YSpace = calculator.ParentDepth + 1;
-			// Debug.Log( taskL.Current.Key + " calculator.DepthToRoot=" + calculator.DepthToRoot);
-			// Debug.Log( taskL.Current.Key + " calculator.ParentDepth=" + calculator.ParentDepth);
+			CalculateYSpaceFromParentDepth(calculator);
 		}
 	}
 
 
-	int FindParentDepthByThisNode( Dictionary<int, TaskPositionHelper > taskCalculaor , int id )
+	int FindParentDepthByThisNode( Dictionary<int, TaskPositionHelper > taskCalculatorMap , int id )
 	{
 		int ret = 0 ;
 
-		TaskPositionHelper thisTask = taskCalculaor[id];
+		TaskPositionHelper thisTask = taskCalculatorMap[id];
 		while ( 0 != thisTask.Bundle.Relation.ParentID )
 		{
-			thisTask = taskCalculaor[thisTask.Bundle.Relation.ParentID];
+			thisTask = taskCalculatorMap[thisTask.Bundle.Relation.ParentID];
 			++ret;
 		}
 		return ret ;
