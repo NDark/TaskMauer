@@ -4,7 +4,35 @@ using UnityEngine;
 
 public partial class TaskDisplayManager : MonoBehaviour 
 {
-	void AddTaskPositionHelper( TaskBundle bundle )
+	void AddTaskCalculatorFromTaskBundle(TaskBundle bundle)
+	{
+		TaskPositionHelper helper = InsertTaskPositionHelper(bundle);
+		if (null != helper)
+		{
+			helper.DepthToRoot = FindDepthToRootByThisNode( m_TaskCalculator, bundle.Data.TaskID ) ;
+
+			CalculateParentDepthTilParent( m_TaskCalculator , helper , helper.DepthToRoot ) ;
+
+			CalculateYSpaceFromParentDepth(helper);
+
+			CalculateXSpace(m_TaskData, helper);
+
+			helper.IsSetPosition = (helper.Bundle.Visual.PositionStr != string.Empty);
+
+			CheckAndAssignRowIndex(m_TaskCalculator, helper);
+
+			List<int> sortingArray = new List<int>();
+			if (0 != bundle.Relation.ParentID)
+			{
+				// sor
+				sortingArray = CreateSortingArrayForParentIDSet(m_TaskData , bundle.Relation.ParentID );
+			}
+		}
+		// try increment parents' depth
+
+	}
+
+	TaskPositionHelper InsertTaskPositionHelper( TaskBundle bundle )
 	{
 		if (null != bundle)
 		{
@@ -12,7 +40,150 @@ public partial class TaskDisplayManager : MonoBehaviour
 				{
 					Bundle = bundle
 				});
+			return m_TaskCalculator[bundle.Data.TaskID] ;
 		}
+		return null ;
+	}
+
+	void CalculateXSpace( Dictionary<int,TaskBundle> taskBundle , TaskPositionHelper taskHelper )
+	{
+		var data = taskHelper.Bundle;
+
+		// calculate space of this task. 
+		// based on the children count.
+		float childNum = 0 ;
+
+		var taskChild = taskBundle.GetEnumerator();
+		while (taskChild.MoveNext())
+		{
+			var dataChild = taskChild.Current.Value;
+
+			if (dataChild != data && dataChild.Relation.ParentID == data.Data.TaskID )
+			{
+				++childNum;
+			}
+		}
+
+		if (childNum < 2)// child number 0 and 1 is treated as 0 (size 1)
+		{
+			childNum = 0; 
+		}
+		taskHelper.XSpace = childNum + 1 ;
+	}
+
+	void CalculateXSpaceForAllTasks( Dictionary<int,TaskBundle> taskBundle , Dictionary<int, TaskPositionHelper > taskHelpers )
+	{
+
+		// calculate the XSpace for each task
+		var taskJ = taskBundle.GetEnumerator();
+		while (taskJ.MoveNext())
+		{
+			var data = taskJ.Current.Value;
+			CalculateXSpace(m_TaskData, taskHelpers[data.Data.TaskID]);
+		}
+	}
+
+	List<int> CreateSortingArrayForParentIDSet( Dictionary<int,TaskBundle> tasks , int parentID )
+	{
+	
+		List<int> taskInTheSameParentID = new List<int>();
+
+		var taskM = tasks.GetEnumerator();
+		while (taskM.MoveNext())
+		{
+			var data = taskM.Current.Value;
+			if (false == m_TaskCalculator[data.Data.TaskID].IsSetPosition)
+			{
+				if (data.Relation.ParentID == parentID)
+				{
+					taskInTheSameParentID.Add(data.Data.TaskID);
+				}
+			}
+		}
+
+		if (taskInTheSameParentID.Count > 0)
+		{
+			TaskVisualObj visualNode = TryFindTaskVisual(parentID);
+			TaskVidual2DObjectHelper visual = visualNode.m_2DHelper;
+			visual.SetupParentPanel(this,parentID,taskInTheSameParentID );
+		}
+
+		SortVisualTaskInARow(taskInTheSameParentID);
+
+		return taskInTheSameParentID; 
+
+	}
+
+	void SetParentAndLocalPositionInArray( Dictionary<int,TaskBundle> tasks , Dictionary<int, TaskPositionHelper > helpers , List<int> row )
+	{
+		float tempX = 0;
+		foreach (var taskID in row )
+		{
+			// calculate the size of each task 
+			TaskBundle task = tasks[taskID];
+			TaskPositionHelper calculator = helpers[taskID];
+
+			TaskVisualObj visual = TryFindTaskVisual(taskID);
+			TaskVisualObj visualParent = TryFindTaskVisual(task.Relation.ParentID);
+			if(null!= visual && null != visualParent )
+			{
+				visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
+				visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
+			}
+
+			tempX += calculator.XSpace;
+		}
+	}
+
+	void SetLocalPositionInArray(List <int> row , float yPos , out float maxYSpace )
+	{
+		maxYSpace = 0.0f;
+		float tempX = 0;
+
+		foreach (var taskID in row )
+		{
+			// calculate the size of each task 
+			TaskBundle task = m_TaskData[taskID];
+			TaskPositionHelper calculator = m_TaskCalculator[taskID];
+			TaskVisualObj visual = TryFindTaskVisual(taskID);
+
+			if(null!= visual)
+			{
+				visual.m_3DObj.transform.localPosition = new Vector3( tempX , yPos , 0 ) ;
+			}
+
+			if (calculator.YSpace > maxYSpace)
+			{
+				maxYSpace = calculator.YSpace; 
+			}
+
+			tempX += calculator.XSpace;
+		}
+
+	}
+
+	List<int> CreateSortingArrayForEachRowIndex( Dictionary<int,TaskBundle> tasks , Dictionary<int, TaskPositionHelper > helpers , int rowIndex )
+	{
+		List<int> taskInTheSameRow = new List<int>();
+
+		var taskM = tasks.GetEnumerator();
+		while (taskM.MoveNext())
+		{
+			var data = taskM.Current.Value;
+			if (false == helpers[data.Data.TaskID].IsSetPosition)
+			{
+				int taskParenID = helpers[data.Data.TaskID].Bundle.Relation.ParentID;
+				if (m_TaskCalculator[data.Data.TaskID].RowIndex == rowIndex 
+					&& 0 == taskParenID )
+				{
+					taskInTheSameRow.Add(data.Data.TaskID);
+				}
+			}
+		}
+
+		SortVisualTaskInARow(taskInTheSameRow);
+
+		return taskInTheSameRow;
 	}
 
 	void CalculateUnAssignedVisualTask()
@@ -25,42 +196,14 @@ public partial class TaskDisplayManager : MonoBehaviour
 			var taskI = m_TaskData.GetEnumerator();
 			while (taskI.MoveNext())
 			{
-				AddTaskPositionHelper(taskI.Current.Value);
+				InsertTaskPositionHelper(taskI.Current.Value);
 			}
 		}
 
 		// calculate the parent depth
 		CalculateParentDepth(m_TaskCalculator) ;
 
-		// calculate the XSpace for each task
-		{
-			var taskJ = m_TaskData.GetEnumerator();
-			while (taskJ.MoveNext())
-			{
-				var data = taskJ.Current.Value;
-
-				// calculate space of this task. 
-				// based on the children count.
-				float childNum = 0 ;
-
-				var taskChild = m_TaskData.GetEnumerator();
-				while (taskChild.MoveNext())
-				{
-					var dataChild = taskChild.Current.Value;
-
-					if (dataChild != data && dataChild.Relation.ParentID == data.Data.TaskID )
-					{
-						++childNum;
-					}
-				}
-
-				if (childNum < 2)// child number 0 and 1 is treated as 0 (size 1)
-				{
-					childNum = 0; 
-				}
-				m_TaskCalculator[data.Data.TaskID].XSpace = childNum + 1 ;
-			}
-		}
+		CalculateXSpaceForAllTasks(m_TaskData, m_TaskCalculator);
 
 		{
 			var taskK = m_TaskData.GetEnumerator();
@@ -71,28 +214,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			}
 		}
 
-
-		List<int> rowIndiceSet = new List<int>();
-
-		// calculate y
-		{
-			var taskL = m_TaskData.GetEnumerator();
-			while (taskL.MoveNext())
-			{
-				var data = taskL.Current.Value;
-				if(false== m_TaskCalculator[data.Data.TaskID].IsSetPosition)
-				{
-					int rowIndex = CalculateRowIndex(data.Data.Assignee);		
-					m_TaskCalculator[data.Data.TaskID].RowIndex = rowIndex;
-					if (-1 == rowIndiceSet.IndexOf(rowIndex))
-					{
-						rowIndiceSet.Add(rowIndex);
-					}
-				}
-
-
-			}
-		}
+		CheckAllRowIndexArray();
 
 		List<int> parentIDSet = new List<int>();
 
@@ -107,7 +229,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 				{
 					if (-1 == parentIDSet.IndexOf(m_TaskCalculator[data.Data.TaskID].Bundle.Relation.ParentID))
 					{
-						
 						parentIDSet.Add(taskParenID);
 					}
 				}
@@ -124,29 +245,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			var parentIDEnum = parentIDSet.GetEnumerator();
 			while (parentIDEnum.MoveNext())
 			{
-				List<int> taskInTheSameParentID = new List<int>();
-				var taskM = m_TaskData.GetEnumerator();
-				while (taskM.MoveNext())
-				{
-					var data = taskM.Current.Value;
-					if (false == m_TaskCalculator[data.Data.TaskID].IsSetPosition)
-					{
-						if (data.Relation.ParentID == parentIDEnum.Current)
-						{
-							taskInTheSameParentID.Add(data.Data.TaskID);
-						}
-					}
-				}
-
-				if (taskInTheSameParentID.Count > 0)
-				{
-					TaskVisualObj visualNode = TryFindTaskVisual(parentIDEnum.Current);
-					TaskVidual2DObjectHelper visual = visualNode.m_2DHelper;
-					visual.SetupParentPanel(this,parentIDEnum.Current,taskInTheSameParentID );
-				}
-
-				SortVisualTaskInARow(taskInTheSameParentID);
-
+				List<int> taskInTheSameParentID = CreateSortingArrayForParentIDSet(m_TaskData , parentIDEnum.Current );
 				sortedForEachParent.Add(parentIDEnum.Current, taskInTheSameParentID);
 			}
 		}
@@ -154,81 +253,31 @@ public partial class TaskDisplayManager : MonoBehaviour
 		// according to each sorted list, assigned position
 		foreach (var row in sortedForEachParent.Values)
 		{
-			float tempX = 0;
-			foreach (var taskID in row )
-			{
-				// calculate the size of each task 
-				TaskBundle task = m_TaskData[taskID];
-				TaskPositionHelper calculator = m_TaskCalculator[taskID];
-
-				TaskVisualObj visual = TryFindTaskVisual(taskID);
-				TaskVisualObj visualParent = TryFindTaskVisual(task.Relation.ParentID);
-				if(null!= visual && null != visualParent )
-				{
-					visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
-					visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
-				}
-
-				tempX += calculator.XSpace;
-			}
+			SetParentAndLocalPositionInArray(m_TaskData , m_TaskCalculator , row );
 		}
 
-		Dictionary<float,List <int> > sortedForEachYRow = new Dictionary<float, List<int>>();
+		Dictionary<int,List <int> > sortedForEachYRow = new Dictionary<int, List<int>>();
 
-		// for each y 
+
+		// for each row index  
 		{
-			var rowIndex = rowIndiceSet.GetEnumerator();
+			var rowIndex = m_RowIndiceSet.GetEnumerator();
 			while (rowIndex.MoveNext())
 			{
-				List<int> taskInTheSameRow = new List<int>();
-				var taskM = m_TaskData.GetEnumerator();
-				while (taskM.MoveNext())
-				{
-					var data = taskM.Current.Value;
-					if (false == m_TaskCalculator[data.Data.TaskID].IsSetPosition)
-					{
-						int taskParenID = m_TaskCalculator[data.Data.TaskID].Bundle.Relation.ParentID;
-						if (m_TaskCalculator[data.Data.TaskID].RowIndex == rowIndex.Current 
-							&& 0 == taskParenID )
-						{
-							taskInTheSameRow.Add(data.Data.TaskID);
-						}
-					}
-				}
-
-				SortVisualTaskInARow(taskInTheSameRow);
-
+				List<int>  taskInTheSameRow = CreateSortingArrayForEachRowIndex(m_TaskData , m_TaskCalculator , rowIndex.Current );
 				sortedForEachYRow.Add(rowIndex.Current, taskInTheSameRow);
 			}
 		}
 
-
 		float tempY = 0;
 		// according to each sorted list, assigned position
-		foreach (var row in sortedForEachYRow.Values)
+		foreach (var row in sortedForEachYRow)
 		{
 			float maxYSpace = 0;
-			float tempX = 0;
-			foreach (var taskID in row )
-			{
-				// calculate the size of each task 
-				TaskBundle task = m_TaskData[taskID];
-				TaskPositionHelper calculator = m_TaskCalculator[taskID];
 
-				TaskVisualObj visual = TryFindTaskVisual(taskID);
+			m_RowToPosY.Add(row.Key, tempY);
 
-				if(null!= visual)
-				{
-					visual.m_3DObj.transform.localPosition = new Vector3( tempX , tempY , 0 ) ;
-				}
-
-				if (calculator.YSpace > maxYSpace)
-				{
-					maxYSpace = calculator.YSpace; 
-				}
-
-				tempX += calculator.XSpace;
-			}
+			SetLocalPositionInArray( row.Value , tempY , out maxYSpace);
 
 			tempY += maxYSpace;
 		}
@@ -267,7 +316,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		while (taskJ.MoveNext())
 		{
 			var calculator = taskJ.Current.Value;
-			calculator.DepthToRoot = FindParentDepthByThisNode( taskCalculaor, taskJ.Current.Key ) ;
+			calculator.DepthToRoot = FindDepthToRootByThisNode( taskCalculaor, taskJ.Current.Key ) ;
 		}
 	}
 
@@ -294,7 +343,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 	}
 
-	void CalculateParentDepthTilParent( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
+	void CalculateAllParentDepthTilParent( Dictionary<int, TaskPositionHelper > taskCalculaor ) 
 	{
 		var taskK = taskCalculaor.GetEnumerator();
 		while (taskK.MoveNext())
@@ -316,7 +365,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	{
 		CalculateAllDepthToRoot(taskCalculaor);
 
-		CalculateParentDepthTilParent(taskCalculaor);
+		CalculateAllParentDepthTilParent(taskCalculaor);
 
 		var taskL = taskCalculaor.GetEnumerator();
 		while (taskL.MoveNext())
@@ -327,7 +376,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	}
 
 
-	int FindParentDepthByThisNode( Dictionary<int, TaskPositionHelper > taskCalculatorMap , int id )
+	int FindDepthToRootByThisNode( Dictionary<int, TaskPositionHelper > taskCalculatorMap , int id )
 	{
 		int ret = 0 ;
 
@@ -340,8 +389,37 @@ public partial class TaskDisplayManager : MonoBehaviour
 		return ret ;
 	}
 
+	void CheckAndAssignRowIndex( Dictionary<int, TaskPositionHelper > taskHelperVec , TaskPositionHelper helper )
+	{
+		
+		var data = helper.Bundle;
+		if(false== taskHelperVec[data.Data.TaskID].IsSetPosition)
+		{
+			int rowIndex = CalculateRowIndex(data.Data.Assignee);		
+			helper.RowIndex = rowIndex;
+			if (-1 == m_RowIndiceSet.IndexOf(rowIndex))
+			{
+				m_RowIndiceSet.Add(rowIndex);
+			}
+		}
+	}
+
+	void CheckAllRowIndexArray()
+	{
+
+		var taskL = m_TaskData.GetEnumerator();
+		while (taskL.MoveNext())
+		{
+			var data = taskL.Current.Value;
+			CheckAndAssignRowIndex(m_TaskCalculator, m_TaskCalculator[data.Data.TaskID]);
+		}
+
+	}
+
 	Dictionary<int, TaskPositionHelper > m_TaskCalculator = new Dictionary<int, TaskPositionHelper>() ;
 
+	List<int> m_RowIndiceSet = new List<int>();
+	Dictionary<int,float> m_RowToPosY = new Dictionary<int, float>() ;
 }
 
 [System.Serializable]
