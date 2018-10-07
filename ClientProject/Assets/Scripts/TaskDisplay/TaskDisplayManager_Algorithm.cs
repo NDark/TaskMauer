@@ -33,14 +33,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 				sortingArray = CreateSortingArrayForEachRowIndex(m_TaskData , m_TaskCalculator , helper.RowIndex );
 				if (!m_RowToPosY.ContainsKey(helper.RowIndex))
 				{
-					m_RowToPosY.Add( helper.RowIndex , m_RowMaxYNow );
-
-					float maxYSpace = 0;
-					SetLocalPositionInArray( sortingArray , m_RowMaxYNow , out maxYSpace);
-					m_RowMaxYNow += maxYSpace;
-
+					m_RowToPosY.Add(helper.RowIndex, m_RowMaxYNow);
 				}
+
+				float maxYSpace = 0;
+				SetLocalPositionInArray( sortingArray , m_RowMaxYNow , out maxYSpace);
+				m_RowMaxYNow += maxYSpace;
 			}
+
+			Debug.LogWarning("AddTaskCalculatorFromTaskBundle");
+
 		}
 
 	}
@@ -142,6 +144,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 			{
 				visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
 				visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
+
+				Debug.LogWarning("visual.m_3DObj.transform.localPosition" + visual.m_3DObj.transform.localPosition );
 			}
 
 			tempX += calculator.XSpace;
@@ -163,6 +167,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 			if(null!= visual)
 			{
 				visual.m_3DObj.transform.localPosition = new Vector3( tempX , yPos , 0 ) ;
+
+				Debug.LogWarning("visual.m_3DObj.transform.localPosition" + visual.m_3DObj.transform.localPosition );
+
 			}
 
 			if (calculator.YSpace > maxYSpace)

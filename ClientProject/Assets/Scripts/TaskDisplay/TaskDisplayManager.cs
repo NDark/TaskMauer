@@ -54,6 +54,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
+
+			AddTaskCalculatorFromTaskBundle(bundleData);
 		}
 
 		m_AddTaskInterfaceHelper.gameObject.SetActive(false);
