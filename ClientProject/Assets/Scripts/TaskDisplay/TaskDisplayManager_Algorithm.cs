@@ -112,12 +112,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 		while (taskM.MoveNext())
 		{
 			var data = taskM.Current.Value;
-			if (false == m_TaskCalculator[data.Data.TaskID].IsSetPosition)
+			if (data.Relation.ParentID == parentID)
 			{
-				if (data.Relation.ParentID == parentID)
-				{
-					taskInTheSameParentID.Add(data.Data.TaskID);
-				}
+				taskInTheSameParentID.Add(data.Data.TaskID);
 			}
 		}
 
@@ -148,7 +145,10 @@ public partial class TaskDisplayManager : MonoBehaviour
 			if(null!= visual && null != visualParent )
 			{
 				visual.m_3DObj.transform.SetParent(visualParent.m_3DObj.transform);
-				visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
+				if (!calculator.IsSetPosition)
+				{
+					visual.m_3DObj.transform.localPosition = new Vector3( tempX , 0.7f , 1 ) ;
+				}
 
 				// Debug.LogWarning("visual.m_3DObj.transform.localPosition" + visual.m_3DObj.transform.localPosition );
 			}
@@ -169,7 +169,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskPositionHelper calculator = m_TaskCalculator[taskID];
 			TaskVisualObj visual = TryFindTaskVisual(taskID);
 
-			if(null!= visual)
+			if(null!= visual && !calculator.IsSetPosition )
 			{
 				visual.m_3DObj.transform.localPosition = new Vector3( tempX , yPos , 0 ) ;
 			}
@@ -233,6 +233,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 			{
 				var data = taskK.Current.Value;
 				m_TaskCalculator[data.Data.TaskID].IsSetPosition = (data.Visual.PositionStr != string.Empty);
+				var visual = TryFindTaskVisual(data.Data.TaskID);
+				visual.m_3DObj.transform.localPosition = TaskBundleHelper.ParsePositionStr(data.Visual.PositionStr);
 			}
 		}
 
@@ -247,7 +249,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			{
 				var data = taskL.Current.Value;
 				int taskParenID = m_TaskCalculator[data.Data.TaskID].Bundle.Relation.ParentID;
-				if(false== m_TaskCalculator[data.Data.TaskID].IsSetPosition && taskParenID != 0 )
+				if( taskParenID != 0 )
 				{
 					if (-1 == parentIDSet.IndexOf(m_TaskCalculator[data.Data.TaskID].Bundle.Relation.ParentID))
 					{
@@ -260,7 +262,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 
 		Dictionary<float,List <int> > sortedForEachParent = new Dictionary<float, List<int>>();
-
 
 		// for each parent id
 		{
@@ -414,10 +415,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 	{
 		
 		var data = helper.Bundle;
-		if(false== taskHelperVec[data.Data.TaskID].IsSetPosition)
 		{
 			int rowIndex = CalculateRowIndex(data.Data.Assignee);		
-			Debug.LogWarning("data.Data.Assignee="+data.Data.Assignee+" : rowIndex=" +rowIndex);
+			// Debug.LogWarning("data.Data.Assignee="+data.Data.Assignee+" : rowIndex=" +rowIndex);
 			helper.RowIndex = rowIndex;
 			if (-1 == m_RowIndiceSet.IndexOf(rowIndex))
 			{

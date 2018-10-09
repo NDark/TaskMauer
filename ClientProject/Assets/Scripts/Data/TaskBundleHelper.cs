@@ -31,4 +31,18 @@ public class TaskBundleHelper
 		}
 
 	}
+
+	public static Vector3 ParsePositionStr( string input )
+	{
+		Vector3 ret = Vector3.zero;
+		char[] splitor = { ',' };
+		string[] strVec = input.Split(splitor, System.StringSplitOptions.RemoveEmptyEntries);
+		if (strVec.Length>= 3 )
+		{
+			float.TryParse(strVec[0], out ret.x);
+			float.TryParse(strVec[1], out ret.y);
+			float.TryParse(strVec[2], out ret.z);
+		}
+		return ret;
+	}
 }

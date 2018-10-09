@@ -116,13 +116,15 @@ public partial class TaskDisplayManager : MonoBehaviour
 		### Task4 relative Task1
 		### Task5 Member2
 		### Task6 Member3
-		### Task7 PositionStr
-		### Task8 IsPin
-		### Task9 follow Task4
+		### Task7 parent Task3
+		### Task8 PositionStr
+		### Task9 parent Task3 PositionStr
+		### Task10 follow Task4
 
 		*/
 		++id; // zero is not a valid taskid
 		int task1ID = 0 ;
+		int task2ID = 0 ;
 		int task3ID = 0 ;
 
 		{
@@ -136,7 +138,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		{
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
-			bundleData.Data.TaskID = id++;
+			task2ID = bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task2";
 			bundleData.Data.Assignee = "Member1";
 			bundleData.Data.Link = "www.google.com.tw";
@@ -189,7 +191,26 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task7";
 			bundleData.Data.Link = "www.google.com.tw";
-			// bundleData.Relation.ParentID = task3ID;// task3ID 
+			bundleData.Relation.ParentID = task3ID;// task3ID 
+			CheckAndCreateTaskObj(bundleData);
+			AddTask(bundleData);
+		}
+
+		{
+			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
+			bundleData.Data.TaskID = id++;
+			bundleData.Data.Title = "Task8";
+			bundleData.Visual.PositionStr = "2.0,0.5,0";
+			CheckAndCreateTaskObj(bundleData);
+			AddTask(bundleData);
+		}
+
+		{
+			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
+			bundleData.Data.TaskID = id++;
+			bundleData.Data.Title = "Task9";
+			bundleData.Visual.PositionStr = "3.0,0.5,0";
+			bundleData.Relation.ParentID = task2ID;// task2ID 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
