@@ -10,6 +10,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	const float CONST_ZOOM_SPEED = 1.0f;
 	const float CONST_CLICK_SEC = 0.3f;
 	const float CONST_PAN_SPEED = 0.5f ;
+	const float CONST_DRAG_OBJECT_SPEED = 1.5f ;
 	public GameObject m_Task3DParent;
 	public GameObject m_Task2DParent;
 	public Camera m_3DCamera ;
@@ -332,18 +333,34 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	void CheckInput()
 	{
+		bool mouseGoesUp = Input.GetMouseButtonUp(0);
 		if (m_MouseIsDownTimer.IsActive 
-			&& Input.GetMouseButtonUp(0)
-			&& !m_MouseIsDownTimer.IsReady(Time.time ) 
+			&& mouseGoesUp
 		)
 		{
-			MouseClick( Input.mousePosition );
+			if (!m_MouseIsDownTimer.IsReady(Time.time))
+			{
+				MouseClick(Input.mousePosition);
+			}
+			else
+			{
+				// mosue release
+				MouseRelease() ;
+			}
 		}
+
 
 		if (m_MouseIsDownTimer.IsActive
 			&& m_MouseIsDownTimer.IsReady(Time.time ))
 		{
-			MouseMove(Input.mousePosition);
+			if (IsSelected())
+			{
+				DragSelectObject(Input.mousePosition);
+			}
+			else
+			{
+				DragScene(Input.mousePosition);
+			}
 		}
 
 		if( Input.GetMouseButtonDown(0))
@@ -366,7 +383,22 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 	}
 
-	void MouseMove(Vector3 inputMousePosition)
+	void DragSelectObject(Vector3 inputMousePosition)
+	{
+		if (IsSelected())
+		{
+			TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
+			if (null != visual)
+			{
+				m_SelectedObjDraged = true;
+				Vector3 delta = inputMousePosition - m_InputMousePositionPrevious;
+				visual.m_3DObj.transform.Translate( CONST_DRAG_OBJECT_SPEED * delta* Time.deltaTime );	
+			}
+		}
+
+	}
+
+	void DragScene(Vector3 inputMousePosition)
 	{
 		Vector3 delta = inputMousePosition - m_InputMousePositionPrevious;
 		m_3DCamera.transform.Translate(-1 * CONST_PAN_SPEED * delta* Time.deltaTime );
@@ -374,7 +406,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	void MouseClick( Vector3 inputMousePosition )
 	{
-		if (0!=m_SelectedObjTaskID)
+		if (this.IsSelected() )
 		{
 			m_SelectedObjTaskID = 0;
 			ShowSelectionGUI( false );
@@ -386,7 +418,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
 			if (null != visual)
 			{
-				
 				ShowSelectionGUI(true);
 				UpdateSelectionGUI(visual);
 			}
@@ -468,6 +499,34 @@ public partial class TaskDisplayManager : MonoBehaviour
 		ShowSelectionGUI(false);
 	}
 
+	void MouseRelease() 
+	{
+		if (m_SelectedObjDraged  )
+		{
+			if (IsSelected())
+			{
+				// update position to data
+				TaskBundle bundle = TryFindTaskData( m_SelectedObjTaskID ) ;
+				TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
+				if ( null != visual && null != bundle)
+				{
+					Vector3 pos = visual.m_3DObj.transform.localPosition;
+					// update packet
+
+					bundle.Visual.PositionStr = string.Format("{0}{1}{2}",pos.x , pos.y, pos.z  );
+					bundle.Visual.IsPin = true;
+
+				}
+			}
+			m_SelectedObjDraged = false;
+		}
+
+	}
+	bool IsSelected()
+	{
+		return (0 != m_SelectedObjTaskID);
+	}
+	bool m_SelectedObjDraged = false ;
 	int m_SelectedObjTaskID = 0 ;
 	CountDownTimer m_MouseIsDownTimer = new CountDownTimer();
 	Vector3 m_InputMousePositionPrevious = Vector3.zero ;
