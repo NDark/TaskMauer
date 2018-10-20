@@ -19,6 +19,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	public GameObject m_Task2DPrefab ;
 	public Task2DUpdateWith3D m_SelectionHelper ;
 	public AddTaskInterfaceHelper m_AddTaskInterfaceHelper;
+	public ModifyTaskInterfaceHelper m_ModifyTaskInterfaceHelper;
 
 	void Awake() 
 	{
@@ -29,10 +30,33 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_MouseIsDownTimer.IntervalSec = CONST_CLICK_SEC;
 	}
 
+	public void ConfirmModifyTask()
+	{
+		if (null == m_ModifyTaskInterfaceHelper)
+		{
+			return;
+		}
+
+		TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
+		TaskBundle bundle = TryFindTaskData(m_SelectedObjTaskID);
+		if (null != bundle && null != visual )
+		{
+			// uploading apply change to task
+
+			UpdateyDataToVisual(bundle , visual);
+		}
+
+		m_ModifyTaskInterfaceHelper.gameObject.SetActive(false);
+	}
+
 	public void AddTask()
 	{
 		Debug.LogWarning("AddTask");
 
+		if (null == m_AddTaskInterfaceHelper)
+		{
+			return;
+		}
 		{
 			int maxID = int.MinValue;
 			foreach( var i in m_TaskData.Keys )
@@ -404,8 +428,20 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_3DCamera.transform.Translate(-1 * CONST_PAN_SPEED * delta* Time.deltaTime );
 	}
 
+	bool IsUIEmpty()
+	{
+		bool ret = !m_AddTaskInterfaceHelper.gameObject.activeSelf 
+			&& !m_ModifyTaskInterfaceHelper.gameObject.activeSelf 
+			;
+		return ret;
+	}
 	void MouseClick( Vector3 inputMousePosition )
 	{
+		if (!IsUIEmpty())
+		{
+			return;
+		}
+
 		if (this.IsSelected() )
 		{
 			m_SelectedObjTaskID = 0;
@@ -414,16 +450,66 @@ public partial class TaskDisplayManager : MonoBehaviour
 		else
 		{
 			// check click
-			m_SelectedObjTaskID = CheckClickVisual( Input.mousePosition ) ;
-			TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
-			if (null != visual)
-			{
-				ShowSelectionGUI(true);
-				UpdateSelectionGUI(visual);
-			}
+			var taskID = CheckClickVisual( Input.mousePosition ) ;
+			SelectATask(taskID);
 		}
 	}
 
+	void UpdateyDataToVisual( TaskBundle bundle , TaskVisualObj visual )
+	{
+		if (null == bundle)
+		{
+			return;
+		}
+		if (null == visual)
+		{
+			return;
+		}
+
+		bundle.Data.Title = m_ModifyTaskInterfaceHelper.m_TitleInput.text;
+		bundle.Data.Assignee = m_ModifyTaskInterfaceHelper.m_AssigneeInput.text;
+		bundle.Data.Link = m_ModifyTaskInterfaceHelper.m_LinkInput.text;
+		int.TryParse(m_ModifyTaskInterfaceHelper.m_ParentInput.text, out bundle.Relation.ParentID);
+
+		visual.m_2DHelper.UpdateTitle( bundle.Data.Title ) ;
+		visual.m_2DHelper.UpdateAssignee( bundle.Data.Assignee ) ;
+		visual.m_2DHelper.UpdateLinkURL( bundle.Data.Link ) ;
+
+	}
+
+	void FetchDataToEditor( TaskBundle bundle )
+	{
+		if (null == bundle)
+		{
+			return;
+		}
+		if (null == m_ModifyTaskInterfaceHelper)
+		{
+			return;
+		}
+
+		m_ModifyTaskInterfaceHelper.m_TaskID.text = bundle.Data.TaskID.ToString();
+		m_ModifyTaskInterfaceHelper.m_TitleInput.text = bundle.Data.Title ;
+		m_ModifyTaskInterfaceHelper.m_AssigneeInput.text = bundle.Data.Assignee ;
+		m_ModifyTaskInterfaceHelper.m_LinkInput.text = bundle.Data.Link;
+		m_ModifyTaskInterfaceHelper.m_ParentInput.text = bundle.Relation.ParentID.ToString();
+
+		m_ModifyTaskInterfaceHelper.gameObject.SetActive(true);
+	}
+
+	void SelectATask(int selectTaskID )
+	{
+		m_SelectedObjTaskID = selectTaskID;
+		TaskBundle bundle = TryFindTaskData(m_SelectedObjTaskID);
+		TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
+
+		if (null != visual)
+		{
+			FetchDataToEditor(bundle);
+			ShowSelectionGUI(true);
+			UpdateSelectionGUI(visual);
+		}
+	}
 	int CheckClickVisual( Vector3 inputMousePos )
 	{
 		int ret = 0;
@@ -495,6 +581,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	{
 
 		m_AddTaskInterfaceHelper.OnPressAddButton += AddTask;
+		m_ModifyTaskInterfaceHelper.OnPressModifyButton += ConfirmModifyTask;
 
 		ShowSelectionGUI(false);
 	}
