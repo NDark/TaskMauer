@@ -58,6 +58,12 @@ public partial class TaskDisplayManager : MonoBehaviour
 			return;
 		}
 		{
+			TaskAddRequest req = new TaskAddRequest();
+			// prepare bundle to upload string
+
+			StartCoroutine(StartRequestTaskAdd(req));
+
+
 			int maxID = int.MinValue;
 			foreach( var i in m_TaskData.Keys )
 			{
@@ -79,6 +85,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
+
 
 			AddTaskCalculatorFromTaskBundle(bundleData);
 		}

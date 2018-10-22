@@ -1,12 +1,22 @@
 ﻿
 [System.Serializable]
-public class TaskResObj : StandardResponse 
+public class TaskUpdateResponse 
 {
-	
+	public int UpdateSerial = 0 ;
+	public int RequestSerial = 0 ;
+	public TaskBundle[] TaskVec = null ;
+}
+
+
+[System.Serializable]
+public class TaskUpdateRequestBase
+{
+	public int UpdateSerial = 0 ;
+	public int RequestSerial = 0 ;
 }
 
 [System.Serializable]
-public class TaskUpdateVec
+public class TaskAddRequest : TaskUpdateRequestBase
 {
-	public TaskBundle[] Vec ;
+	public TaskBundle Task = null ;
 }
