@@ -81,7 +81,7 @@ app.post('/TaskUpdate', function(req, res, next)
 {
 	// console.log("req.get('Content')" + req.get('Content') );
 	// console.log("req.get('Author')" + req.get('Author') );
-	// console.log("req.body=" + JSON.stringify(req.body) );
+	console.log("req.body=" + JSON.stringify(req.body) );
 	
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
