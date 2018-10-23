@@ -77,22 +77,26 @@ app.all('/test', function(req, res, next)
 	console.log( "url=" + req.url ) ;
 });
 
-app.post('/TaskUpdate', function(req, res, next) 
+app.post('/TaskAdd', function(req, res, next) 
 {
 	// console.log("req.get('Content')" + req.get('Content') );
 	// console.log("req.get('Author')" + req.get('Author') );
 	console.log("req.body=" + JSON.stringify(req.body) );
-	
+	/*	
+req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":"","Assignee":"","TimeStamp":0,"ProgressInt":0,"ProgressFloat":0,"Link":""},"Visual":{"PositionStr":"","IsPin":false},"Relation":{"ParentID":0,"Relatives":[],"NeedFollowID":0},"Relative":{"ID":0,"Type":""}}}
+	*/
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
+	
+	// check and insert
+	// generate a new update serial
 	
 	var contentObj = 
 	{
 		'UpdateSerial' : updateSerial
 		,'RequestSerial' : requestSerial
-		, 'TaskVec' : [{}] 
 	}
-	
+
 	respondObj = 
 	{
 		'Success':true
@@ -105,6 +109,41 @@ app.post('/TaskUpdate', function(req, res, next)
 	res.json( respondObj ) ;
 	
 });
+
+app.all('/FetchTasks', function(req, res, next) 
+{
+	// console.log("req.get('Content')" + req.get('Content') );
+	// console.log("req.get('Author')" + req.get('Author') );
+	console.log("req.body=" + JSON.stringify(req.body) );
+	/*	
+req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":"","Assignee":"","TimeStamp":0,"ProgressInt":0,"ProgressFloat":0,"Link":""},"Visual":{"PositionStr":"","IsPin":false},"Relation":{"ParentID":0,"Relatives":[],"NeedFollowID":0},"Relative":{"ID":0,"Type":""}}}
+	*/
+	var updateSerial = req.body.UpdateSerial ;
+	var requestSerial = req.body.RequestSerial ;
+	
+	// check and insert
+	// generate a new update serial
+	
+	var contentObj = 
+	{
+		'UpdateSerial' : updateSerial
+		,'RequestSerial' : requestSerial
+		, 'TaskVec' : [{}] 
+	}
+
+	respondObj = 
+	{
+		'Success':true
+		,'Code':0
+		,'Message':''
+		,'Key':''
+		,'Content': JSON.stringify( contentObj )
+	}
+
+	res.json( respondObj ) ;
+	
+});
+
 app.listen( 3102 );
 console.log('Listening on port 3102...'  );
 
