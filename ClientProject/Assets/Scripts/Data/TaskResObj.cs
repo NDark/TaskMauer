@@ -1,6 +1,6 @@
 ﻿
 [System.Serializable]
-public class TaskUpdateResponse 
+public class TasksResponse 
 {
 	public int UpdateSerial = 0 ;
 	public int RequestSerial = 0 ;

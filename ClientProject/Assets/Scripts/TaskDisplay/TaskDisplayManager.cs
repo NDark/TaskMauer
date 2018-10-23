@@ -57,12 +57,14 @@ public partial class TaskDisplayManager : MonoBehaviour
 		{
 			return;
 		}
+
 		{
 			TaskAddRequest req = new TaskAddRequest();
 			// prepare bundle to upload string
 
 			StartCoroutine(StartRequestTaskAdd(req));
 
+			return;
 
 			int maxID = int.MinValue;
 			foreach( var i in m_TaskData.Keys )
