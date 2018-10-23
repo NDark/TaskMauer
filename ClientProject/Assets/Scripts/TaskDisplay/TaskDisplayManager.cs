@@ -66,30 +66,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 			return;
 
-			int maxID = int.MinValue;
-			foreach( var i in m_TaskData.Keys )
-			{
-				if (i > maxID)
-				{
-					maxID = i;
-				}
-			}
 
-			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
-			bundleData.Data.TaskID = maxID+1;
-			bundleData.Data.Title = m_AddTaskInterfaceHelper.m_TitleInput.text;
-			bundleData.Data.Assignee = m_AddTaskInterfaceHelper.m_AssigneeInput.text;
-			bundleData.Data.Link = m_AddTaskInterfaceHelper.m_LinkInput.text;
-
-			int parentID = 0;
-			int.TryParse(m_AddTaskInterfaceHelper.m_ParentInput.text, out parentID);
-			bundleData.Relation.ParentID = parentID;
-
-			CheckAndCreateTaskObj(bundleData);
-			AddTask(bundleData);
-
-
-			AddTaskCalculatorFromTaskBundle(bundleData);
 		}
 
 		m_AddTaskInterfaceHelper.gameObject.SetActive(false);

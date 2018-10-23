@@ -11,6 +11,15 @@ public class TaskBundleHelper
 		return ret;
 	}
 
+	public static void CopyBundle( TaskBundle input , TaskBundle dest )
+	{
+		dest.Data.TaskID = input.Data.TaskID ;
+		dest.Data.Title = input.Data.Title; 
+		dest.Data.Assignee = input.Data.Assignee;
+		dest.Data.Link = input.Data.Link;
+		dest.Relation.ParentID = input.Relation.ParentID;
+
+	}
 	public static void TryInitalizeBundleInstance( TaskBundle budnle )
 	{
 		if (null == budnle.Data)
