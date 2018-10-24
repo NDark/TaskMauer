@@ -87,9 +87,14 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	*/
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
-	
+	var taskBundle = req.body.Task ;
 	// check and insert
 	// generate a new update serial
+	
+	++gMaxTaskID;
+	
+	taskBundle.Data.TaskID = gMaxTaskID ;
+	gTemperalArray.push(taskBundle) ;
 	
 	var contentObj = 
 	{
@@ -110,6 +115,9 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	
 });
 
+var gMaxTaskID = 0 ;
+var gTemperalArray = [] ;
+
 app.all('/FetchTasks', function(req, res, next) 
 {
 	// console.log("req.get('Content')" + req.get('Content') );
@@ -121,15 +129,29 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
 	
-	// check and insert
-	// generate a new update serial
-	
 	var contentObj = 
 	{
 		'UpdateSerial' : updateSerial
 		,'RequestSerial' : requestSerial
-		, 'TaskVec' : [{}] 
+		, 'TaskVec' : [] 
 	}
+	
+	if( updateSerial == -1 )
+	{
+		// fetch all 
+	}
+	else if( updateSerial < gTemperalArray.length )
+	{
+		
+		for( int i = updateSerial ; i < gTemperalArray.length ; ++i )
+		{
+			contentObj.TaskVec.push( gTemperalArray[] ) ;
+		}
+		
+		contentObj.UpdateSerial = gTemperalArray.length ;
+	}
+	// check and insert
+	// generate a new update serial
 
 	respondObj = 
 	{
