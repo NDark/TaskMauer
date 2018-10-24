@@ -90,6 +90,11 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	var taskBundle = req.body.Task ;
 	// check and insert
 	// generate a new update serial
+	if( gMaxTaskID )
+	{
+		// find the max task id in the table 
+		gMaxTaskID = 1;
+	}
 	
 	++gMaxTaskID;
 	
@@ -143,7 +148,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	else if( updateSerial < gTemperalArray.length )
 	{
 		
-		for( int i = updateSerial ; i < gTemperalArray.length ; ++i )
+		for( var i = updateSerial ; i < gTemperalArray.length ; ++i )
 		{
 			contentObj.TaskVec.push( gTemperalArray[] ) ;
 		}
