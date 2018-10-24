@@ -150,7 +150,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		
 		for( var i = updateSerial ; i < gTemperalArray.length ; ++i )
 		{
-			contentObj.TaskVec.push( gTemperalArray[] ) ;
+			contentObj.TaskVec.push( gTemperalArray[i] ) ;
 		}
 		
 		contentObj.UpdateSerial = gTemperalArray.length ;
