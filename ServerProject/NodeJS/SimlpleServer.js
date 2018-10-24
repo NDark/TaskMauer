@@ -90,10 +90,10 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	var taskBundle = req.body.Task ;
 	// check and insert
 	// generate a new update serial
-	if( gMaxTaskID )
+	if( 0 == gMaxTaskID )
 	{
 		// find the max task id in the table 
-		gMaxTaskID = 1;
+		gMaxTaskID = 10;
 	}
 	
 	++gMaxTaskID;
@@ -120,7 +120,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	
 });
 
-var gMaxTaskID = 10 ;
+var gMaxTaskID = 0 ;
 var gTemperalArray = [] ;
 
 app.all('/FetchTasks', function(req, res, next) 
