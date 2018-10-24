@@ -59,8 +59,12 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 
 		{
-			TaskAddRequest req = new TaskAddRequest();
+			TaskBundle bundle = TaskBundleHelper.CopyFromAddTaskInterfaceHelper(m_AddTaskInterfaceHelper);
 			// prepare bundle to upload string
+			TaskAddRequest req = new TaskAddRequest() ;
+			req.RequestSerial = m_RequestSerial++;
+			req.UpdateSerial = m_UpdateSerial; 
+			req.Task = bundle;
 
 			StartCoroutine(StartRequestTaskAdd(req));
 
@@ -613,5 +617,8 @@ public partial class TaskDisplayManager : MonoBehaviour
 	Dictionary<int,TaskVisualObj> m_TaskVisuals = new Dictionary<int, TaskVisualObj>() ;
 	Dictionary<int,TaskBundle> m_TaskData = new Dictionary<int, TaskBundle>();
 	List<string> m_ExistAssignee = new List<string>();
+
+	int m_RequestSerial = 0 ;
+	int m_UpdateSerial = 0 ;
 }
 

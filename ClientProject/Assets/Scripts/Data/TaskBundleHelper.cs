@@ -11,6 +11,23 @@ public class TaskBundleHelper
 		return ret;
 	}
 
+	public static TaskBundle CopyFromAddTaskInterfaceHelper( AddTaskInterfaceHelper ui )
+	{
+
+		TaskBundle bundleData = new TaskBundle();
+		bundleData.Data = new TaskData();
+		bundleData.Relation = new TaskRelation();
+
+		bundleData.Data.Title = ui.m_TitleInput.text;
+		bundleData.Data.Assignee = ui.m_AssigneeInput.text;
+		bundleData.Data.Link = ui.m_LinkInput.text;
+
+		int parentID = 0;
+		int.TryParse(ui.m_ParentInput.text, out parentID);
+		bundleData.Relation.ParentID = parentID;
+
+		return bundleData;
+	}
 	public static void CopyBundle( TaskBundle input , TaskBundle dest )
 	{
 		dest.Data.TaskID = input.Data.TaskID ;
