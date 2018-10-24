@@ -120,7 +120,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	
 });
 
-var gMaxTaskID = 0 ;
+var gMaxTaskID = 10 ;
 var gTemperalArray = [] ;
 
 app.all('/FetchTasks', function(req, res, next) 
@@ -154,6 +154,8 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		}
 		
 		contentObj.UpdateSerial = gTemperalArray.length ;
+		console.log("gTemperalArray.length=" + gTemperalArray.length );
+		
 	}
 	// check and insert
 	// generate a new update serial
