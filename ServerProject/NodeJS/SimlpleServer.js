@@ -89,38 +89,45 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	var requestSerial = req.body.RequestSerial ;
 	var taskBundle = req.body.Task ;
 	// check and insert
-	// generate a new update serial
-	if( 0 == gMaxTaskID )
+	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
+		( Title ) VALUES \
+		( ? )', 
+		[ taskBundle.Data.Title ],
+		function( iciErr , iciResult )
 	{
-		// find the max task id in the table 
-		gMaxTaskID = 10;
-	}
-	
-	++gMaxTaskID;
-	
-	taskBundle.Data.TaskID = gMaxTaskID ;
-	gTemperalArray.push(taskBundle) ;
-	
-	var contentObj = 
-	{
-		'UpdateSerial' : updateSerial
-		,'RequestSerial' : requestSerial
-	}
+		if ( iciErr ) 
+		{
+			throw iciErr ;
+		}	
+		
+		taskBundle.Data.TaskID = iciResult.insertId ;
+		gTemperalArray.push(taskBundle) ;
+			
+		var contentObj = 
+		{
+			'UpdateSerial' : updateSerial
+			,'RequestSerial' : requestSerial
+		}
 
-	respondObj = 
-	{
-		'Success':true
-		,'Code':0
-		,'Message':''
-		,'Key':''
-		,'Content': JSON.stringify( contentObj )
-	}
+		respondObj = 
+		{
+			'Success':true
+			,'Code':0
+			,'Message':''
+			,'Key':''
+			,'Content': JSON.stringify( contentObj )
+		}
 
-	res.json( respondObj ) ;
+		res.json( respondObj ) ;
+		
+	}  ) ;
+	
+	
+	
 	
 });
 
-var gMaxTaskID = 0 ;
+
 var gTemperalArray = [] ;
 
 app.all('/FetchTasks', function(req, res, next) 
@@ -136,7 +143,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	
 	var contentObj = 
 	{
-		'UpdateSerial' : updateSerial
+		'UpdateSerial' : gTemperalArray.length 
 		,'RequestSerial' : requestSerial
 		, 'TaskVec' : [] 
 	}
@@ -144,6 +151,43 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	if( updateSerial == -1 )
 	{
 		// fetch all 
+		
+		var queryInfo = gDataBasePtr.query( 'SELECT * FROM tb_TaskBundles',
+		[ ] , 
+		function( err , rows , fields ) 
+		{
+			if( err )
+			{
+				throw err ;
+			}
+				
+			for( var i = updateSerial ; i < rows.length ; ++i )
+			{
+				var taskBundleObj = 
+				{
+					'Data' : 
+					{
+						'TaskID' : rows[i].Index
+						,'Title' : rows[i].Title
+					}
+				};
+				contentObj.TaskVec.push(taskBundleObj);
+			}
+			
+			respondObj = 
+			{
+				'Success':true
+				,'Code':0
+				,'Message':''
+				,'Key':''
+				,'Content': JSON.stringify( contentObj )
+			}
+				
+			res.json( respondObj ) ;
+			
+			console.log("rows.length=" + rows.length);
+			
+		} ) ;
 	}
 	else if( updateSerial < gTemperalArray.length )
 	{
@@ -153,23 +197,20 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 			contentObj.TaskVec.push( gTemperalArray[i] ) ;
 		}
 		
-		contentObj.UpdateSerial = gTemperalArray.length ;
-		console.log("gTemperalArray.length=" + gTemperalArray.length );
-		
-	}
-	// check and insert
-	// generate a new update serial
+		console.log("gTemperalArray.length=" + gTemperalArray.length );		
 
-	respondObj = 
-	{
-		'Success':true
-		,'Code':0
-		,'Message':''
-		,'Key':''
-		,'Content': JSON.stringify( contentObj )
+		respondObj = 
+		{
+			'Success':true
+			,'Code':0
+			,'Message':''
+			,'Key':''
+			,'Content': JSON.stringify( contentObj )
+		}
+
+		res.json( respondObj ) ;
 	}
 
-	res.json( respondObj ) ;
 	
 });
 
