@@ -92,12 +92,14 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	// check and insert
 	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
 		( Title , Assignee , TimeStamp \
-		, ProgressInt ,ProgressFloat ,Link ) VALUES \
+		, ProgressInt ,ProgressFloat ,Link \
+		, PositionStr , IsPin ) VALUES \
 		( ? , ? , ? \
-		, ? , ? , ? )', 
+		, ? , ? , ? \
+		, ? , ? )', 
 		[ taskBundle.Data.Title , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
-//		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
+		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
 //		, taskBundle.Relation.ParentID , taskBundle.Relation.Relatives , taskBundle.Relation.NeedFollowID 
 		],
 		function( iciErr , iciResult )
