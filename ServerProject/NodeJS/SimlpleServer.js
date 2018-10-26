@@ -94,7 +94,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		( Title , Assignee , TimeStamp \
 		, ProgressInt ,ProgressFloat ,Link \
 		, PositionStr , IsPin \
-		, ParentID , Relatives, NeedFollowID ) VALUES \
+		, ParentID , RelativesStr, NeedFollowID ) VALUES \
 		( ? , ? , ? \
 		, ? , ? , ? \
 		, ? , ? \
@@ -102,7 +102,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		[ taskBundle.Data.Title , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
-		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.Relatives) , taskBundle.Relation.NeedFollowID 
+		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
 		],
 		function( iciErr , iciResult )
 	{
@@ -194,7 +194,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 					,'Relation' :
 					{
 						'ParentID' : rows[i].ParentID
-						,'Relatives' : rows[i].Relatives
+						,'RelativesStr' : rows[i].RelativesStr
 						,'NeedFollowID' : rows[i].NeedFollowID
 					}
 				};
