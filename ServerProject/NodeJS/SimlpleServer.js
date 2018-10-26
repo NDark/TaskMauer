@@ -189,14 +189,14 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 					}
 					,'Visual' :
 					{
-						'PositionStr' = rows[i].PositionStr
-						,'IsPin' = rows[i].IsPin
+						'PositionStr' : rows[i].PositionStr
+						,'IsPin' : rows[i].IsPin
 					}
 					,'Relation' :
 					{
-						'ParentID' = rows[i].ParentID
-						,'Relatives' = rows[i].Relatives
-						,'NeedFollowID' = rows[i].NeedFollowID
+						'ParentID' : rows[i].ParentID
+						,'Relatives' : rows[i].Relatives
+						,'NeedFollowID' : rows[i].NeedFollowID
 					}
 				};
 				contentObj.TaskVec.push(taskBundleObj);
