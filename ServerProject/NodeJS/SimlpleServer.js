@@ -102,7 +102,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		[ taskBundle.Data.Title , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
-		, taskBundle.Relation.ParentID , taskBundle.Relation.Relatives , taskBundle.Relation.NeedFollowID 
+		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.Relatives) , taskBundle.Relation.NeedFollowID 
 		],
 		function( iciErr , iciResult )
 	{
