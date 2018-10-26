@@ -39,5 +39,4 @@ public class TaskBundle
 	public TaskData Data ;
 	public TaskVisual Visual ;
 	public TaskRelation Relation ;
-	public TaskRelative Relative ;
 }

@@ -47,10 +47,6 @@ public class TaskBundleHelper
 		{
 			budnle.Relation = new TaskRelation();
 		}
-		if (null == budnle.Relative)
-		{
-			budnle.Relative = new TaskRelative();
-		}
 		if (null == budnle.Visual)
 		{
 			budnle.Visual = new TaskVisual();

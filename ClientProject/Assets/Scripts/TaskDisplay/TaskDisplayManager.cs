@@ -67,10 +67,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 			req.Task = bundle;
 
 			StartCoroutine(StartRequestTaskAdd(req));
-
-			return;
-
-
 		}
 
 		m_AddTaskInterfaceHelper.gameObject.SetActive(false);
