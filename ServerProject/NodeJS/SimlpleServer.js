@@ -88,11 +88,23 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
 	var taskBundle = req.body.Task ;
+	
 	// check and insert
 	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
-		( Title ) VALUES \
-		( ? )', 
-		[ taskBundle.Data.Title ],
+		( Title , Assignee , TimeStamp\
+		, ProgressInt ,ProgressFloat ,Link \
+		, PositionStr , IsPin \
+		, ParentID , Relatives, NeedFollowID \
+		) VALUES \
+		( ? , ? , ?\
+		, ? , ? , ? \
+		, ? , ? \
+		, ? , ?, ? )', 
+		[ taskBundle.Data.Title , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
+		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
+		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
+		, taskBundle.Relation.ParentID , taskBundle.Relation.Relatives , taskBundle.Relation.NeedFollowID 
+		],
 		function( iciErr , iciResult )
 	{
 		if ( iciErr ) 
@@ -169,6 +181,22 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 					{
 						'TaskID' : rows[i].Index
 						,'Title' : rows[i].Title
+						,'Assignee' : rows[i].Assignee
+						,'TimeStamp' : rows[i].TimeStamp
+						,'ProgressInt' : rows[i].ProgressInt
+						,'ProgressFloat' : rows[i].ProgressFloat
+						,'Link' : rows[i].Link
+					}
+					,'Visual' :
+					{
+						'PositionStr' = rows[i].PositionStr
+						,'IsPin' = rows[i].IsPin
+					}
+					,'Relation' :
+					{
+						'ParentID' = rows[i].ParentID
+						,'Relatives' = rows[i].Relatives
+						,'NeedFollowID' = rows[i].NeedFollowID
 					}
 				};
 				contentObj.TaskVec.push(taskBundleObj);
