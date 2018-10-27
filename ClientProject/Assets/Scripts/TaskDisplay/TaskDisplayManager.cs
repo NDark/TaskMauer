@@ -63,8 +63,10 @@ public partial class TaskDisplayManager : MonoBehaviour
 			// prepare bundle to upload string
 			TaskAddRequest req = new TaskAddRequest() ;
 			req.RequestSerial = m_RequestSerial++;
-			req.UpdateSerial = m_UpdateSerial; 
+			req.UpdateSerial = TaskMauerStaticData.GetUpdateSerial(); 
 			req.Task = bundle;
+
+			m_RequestList.Add(m_RequestSerial, req);
 
 			StartCoroutine(StartRequestTaskAdd(req));
 		}
@@ -170,9 +172,10 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task4";
-			bundleData.Relation.Relatives = new TaskRelative[1];
-			bundleData.Relation.Relatives[0] = new TaskRelative();
-			bundleData.Relation.Relatives[0].ID = 0;
+			var relatives = new TaskRelative[1];
+			relatives[0] = new TaskRelative();
+			relatives[0].ID = 0;
+			bundleData.Relation.SetRelatives(relatives);
 			bundleData.Data.Link = "www.google.com.tw";
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
@@ -615,6 +618,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	List<string> m_ExistAssignee = new List<string>();
 
 	int m_RequestSerial = 0 ;
-	int m_UpdateSerial = 0 ;
+
+	Dictionary<int, TaskAddRequest > m_RequestList = new Dictionary<int, TaskAddRequest>() ;
 }
 

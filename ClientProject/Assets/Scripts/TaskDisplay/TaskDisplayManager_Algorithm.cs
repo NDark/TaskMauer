@@ -121,8 +121,11 @@ public partial class TaskDisplayManager : MonoBehaviour
 		if (taskInTheSameParentID.Count > 0)
 		{
 			TaskVisualObj visualNode = TryFindTaskVisual(parentID);
-			TaskVidual2DObjectHelper visual = visualNode.m_2DHelper;
-			visual.SetupParentPanel(this,parentID,taskInTheSameParentID );
+			if (null != visualNode)
+			{
+				TaskVidual2DObjectHelper visual = visualNode.m_2DHelper;
+				visual.SetupParentPanel(this,parentID,taskInTheSameParentID );
+			}
 		}
 
 		SortVisualTaskInARow(taskInTheSameParentID);
@@ -352,16 +355,24 @@ public partial class TaskDisplayManager : MonoBehaviour
 		while (0 != tempTask.Bundle.Relation.ParentID)
 		{
 
-			var parent = taskCalculaor[tempTask.Bundle.Relation.ParentID];
-			if (tempDepth-1 >= parent.DepthToRoot)
+			if (taskCalculaor.ContainsKey(tempTask.Bundle.Relation.ParentID))
 			{
-				parent.DepthToRoot = tempDepth -1;
-				parent.ParentDepth = bottomDepth - parent.DepthToRoot;
+				var parent = taskCalculaor[tempTask.Bundle.Relation.ParentID];
+				if (tempDepth-1 >= parent.DepthToRoot)
+				{
+					parent.DepthToRoot = tempDepth -1;
+					parent.ParentDepth = bottomDepth - parent.DepthToRoot;
+				}
+
+				--tempDepth;
+
+				tempTask = parent;
 			}
-
-			--tempDepth;
-
-			tempTask = parent;
+			else 
+			{
+				break;
+			}
+		
 		}
 	}
 
@@ -403,7 +414,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		int ret = 0 ;
 
 		TaskPositionHelper thisTask = taskCalculatorMap[id];
-		while ( 0 != thisTask.Bundle.Relation.ParentID )
+		while ( 0 != thisTask.Bundle.Relation.ParentID && taskCalculatorMap.ContainsKey(thisTask.Bundle.Relation.ParentID) )
 		{
 			thisTask = taskCalculatorMap[thisTask.Bundle.Relation.ParentID];
 			++ret;

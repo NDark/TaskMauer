@@ -22,8 +22,23 @@ public class TaskVisual
 public class TaskRelation
 {
 	public int ParentID;
-	public TaskRelative [] Relatives ;
+	public string RelativesStr ;
 	public int NeedFollowID ;
+
+	public TaskRelative [] GetTaskRelative()
+	{
+		if (null == Relatives)
+		{
+			this.Relatives = UnityEngine.JsonUtility.FromJson<TaskRelative[]>(RelativesStr);
+		}
+		return this.Relatives;
+	}
+	public void SetRelatives( TaskRelative [] set )
+	{
+		this.Relatives = set;
+		this.RelativesStr = UnityEngine.JsonUtility.ToJson(this.Relatives);
+	}
+	TaskRelative [] Relatives ;
 }
 
 [System.Serializable]
