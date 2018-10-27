@@ -158,8 +158,8 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		,'RequestSerial' : requestSerial
 		, 'TaskVec' : [] 
 	}
-	
-	if( updateSerial == -1 )
+
+	if( updateSerial <= 0 )
 	{
 		// fetch all 
 		
