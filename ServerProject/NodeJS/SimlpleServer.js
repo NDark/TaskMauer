@@ -87,11 +87,12 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	*/
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
+	var projectKey = req.body.ProjectKey ;
 	var taskBundle = req.body.Task ;
 	
 	// check and insert
 	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
-		( Title , Assignee , TimeStamp \
+		( Title , Project , Assignee , TimeStamp \
 		, ProgressInt ,ProgressFloat ,Link \
 		, PositionStr , IsPin \
 		, ParentID , RelativesStr, NeedFollowID ) VALUES \
@@ -99,7 +100,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		, ? , ? , ? \
 		, ? , ? \
 		, ? , ? , ? )', 
-		[ taskBundle.Data.Title , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
+		[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
 		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
@@ -151,6 +152,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	*/
 	var updateSerial = req.body.UpdateSerial ;
 	var requestSerial = req.body.RequestSerial ;
+	var projectKey = req.body.ProjectKey ;
 	
 	var contentObj = 
 	{
@@ -163,8 +165,9 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	{
 		// fetch all 
 		
-		var queryInfo = gDataBasePtr.query( 'SELECT * FROM tb_TaskBundles',
-		[ ] , 
+		var queryInfo = gDataBasePtr.query( 'SELECT * FROM tb_TaskBundles \
+		WHERE Project = ?',
+		[ projectKey ] , 
 		function( err , rows , fields ) 
 		{
 			if( err )
