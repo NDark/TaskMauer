@@ -64,6 +64,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskAddRequest req = new TaskAddRequest() ;
 			req.RequestSerial = m_RequestSerial++;
 			req.UpdateSerial = TaskMauerStaticData.GetUpdateSerial(); 
+			req.ProjectKey = m_ProjectKey; 
 			req.Task = bundle;
 
 			m_RequestList.Add(m_RequestSerial, req);
@@ -619,6 +620,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	int m_RequestSerial = 0 ;
 
+	string m_ProjectKey = "TestProject" ;
 	Dictionary<int, TaskAddRequest > m_RequestList = new Dictionary<int, TaskAddRequest>() ;
 }
 
