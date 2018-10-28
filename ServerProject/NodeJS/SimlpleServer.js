@@ -92,11 +92,11 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	
 	// check and insert
 	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
-		( Title , Project , Assignee , TimeStamp \
+		( Title , ProjectKey , Assignee , TimeStamp \
 		, ProgressInt ,ProgressFloat ,Link \
 		, PositionStr , IsPin \
 		, ParentID , RelativesStr, NeedFollowID ) VALUES \
-		( ? , ? , ? \
+		( ? , ? , ? , ? \
 		, ? , ? , ? \
 		, ? , ? \
 		, ? , ? , ? )', 
@@ -166,7 +166,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		// fetch all 
 		
 		var queryInfo = gDataBasePtr.query( 'SELECT * FROM tb_TaskBundles \
-		WHERE Project = ?',
+		WHERE ProjectKey = ?',
 		[ projectKey ] , 
 		function( err , rows , fields ) 
 		{
