@@ -21,6 +21,20 @@ public partial class TaskDisplayManager : MonoBehaviour
 	public AddTaskInterfaceHelper m_AddTaskInterfaceHelper;
 	public ModifyTaskInterfaceHelper m_ModifyTaskInterfaceHelper;
 
+	public void ShowModifyTaskInterface()
+	{
+		m_UIAccessing = true;
+		m_ModifyTaskInterfaceHelper.gameObject.SetActive(true);
+	}
+
+	public void HideModifyTaskInterface()
+	{
+		m_UIAccessing = true;
+		Debug.Log("HideModifyTaskInterface");
+
+		m_ModifyTaskInterfaceHelper.gameObject.SetActive(false);
+	}
+
 	void Awake() 
 	{
 #if ENABLE_LOCAL_DATA		
@@ -46,7 +60,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 			UpdateyDataToVisual(bundle , visual);
 		}
 
-		m_ModifyTaskInterfaceHelper.gameObject.SetActive(false);
+		HideModifyTaskInterface();
+	}
+
+	public void FetchTask()
+	{
+		Debug.LogWarning("FetchTask");
+		TaskUpdateRequestBase fetchReq = new TaskUpdateRequestBase() ;
+		fetchReq.UpdateSerial = TaskMauerStaticData.GetUpdateSerial();
+		fetchReq.ProjectKey = m_ProjectKey; 
+		StartCoroutine(StartRequestFetchTasks(fetchReq));
 	}
 
 	public void AddTask()
@@ -98,7 +121,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	void Update () 
 	{
 		CheckInput();
-		
+		m_UIAccessing = false;
 	}
 
 
@@ -425,10 +448,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 			;
 		return ret;
 	}
+
 	void MouseClick( Vector3 inputMousePosition )
 	{
+		if (m_UIAccessing)
+		{
+			return;
+		}
 		if (!IsUIEmpty())
 		{
+			Debug.LogWarning("MouseClick");
 			return;
 		}
 
@@ -440,8 +469,12 @@ public partial class TaskDisplayManager : MonoBehaviour
 		else
 		{
 			// check click
-			var taskID = CheckClickVisual( Input.mousePosition ) ;
-			SelectATask(taskID);
+			var taskID = CheckClickVisual( inputMousePosition ) ;
+			if (-1 != taskID)
+			{
+				SelectATask(taskID);
+			}
+
 		}
 	}
 
@@ -469,6 +502,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	void FetchDataToEditor( TaskBundle bundle )
 	{
+		Debug.Log("FetchDataToEditor");
 		if (null == bundle)
 		{
 			return;
@@ -484,7 +518,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_ModifyTaskInterfaceHelper.m_LinkInput.text = bundle.Data.Link;
 		m_ModifyTaskInterfaceHelper.m_ParentInput.text = bundle.Relation.ParentID.ToString();
 
-		m_ModifyTaskInterfaceHelper.gameObject.SetActive(true);
+
 	}
 
 	void SelectATask(int selectTaskID )
@@ -496,13 +530,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 		if (null != visual)
 		{
 			FetchDataToEditor(bundle);
+
 			ShowSelectionGUI(true);
 			UpdateSelectionGUI(visual);
 		}
+
+		ShowModifyTaskInterface();
 	}
 	int CheckClickVisual( Vector3 inputMousePos )
 	{
-		int ret = 0;
+		int ret = -1;
 		var ray = m_3DCamera.ScreenPointToRay(inputMousePos);
 		var hits = Physics.RaycastAll(ray);
 		if (hits.Length > 0)
@@ -513,11 +550,10 @@ public partial class TaskDisplayManager : MonoBehaviour
 				int id = 0;
 				if (int.TryParse(hits[i].collider.gameObject.name, out id))
 				{
-					
-
 					if (m_TaskVisuals.ContainsKey(id))
 					{
 						ret = id;	
+						Debug.Log("ret = hits[i].collider.gameObject.name" + hits[i].collider.gameObject.name);
 						return ret;
 					}
 
@@ -622,5 +658,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	string m_ProjectKey = "TestProject" ;
 	Dictionary<int, TaskAddRequest > m_RequestList = new Dictionary<int, TaskAddRequest>() ;
+
+	bool m_UIAccessing = false ;
 }
 
