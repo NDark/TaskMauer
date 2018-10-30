@@ -143,14 +143,10 @@ app.post('/TaskModify', function(req, res, next)
 			else
 			{
 				gDataBasePtr.query('UPDATE tb_TaskBundles SET \
-					( Title , ProjectKey , Assignee , TimeStamp \
-					, ProgressInt ,ProgressFloat ,Link \
-					, PositionStr , IsPin \
-					, ParentID , RelativesStr, NeedFollowID ) VALUES \
-					( ? , ? , ? , ? \
-					, ? , ? , ? \
-					, ? , ? \
-					, ? , ? , ? ) WHERE ProjectKey = ? AND TaskIndex = ? ', 
+					 Title = ? , ProjectKey = ? , Assignee = ? , TimeStamp = ? \
+					, ProgressInt = ? ,ProgressFloat = ? ,Link = ? \
+					, PositionStr = ? , IsPin= ?  \
+					, ParentID = ? , RelativesStr= ? , NeedFollowID = ? WHERE ProjectKey = ? AND TaskIndex = ? ', 
 					[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 					, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 					, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
