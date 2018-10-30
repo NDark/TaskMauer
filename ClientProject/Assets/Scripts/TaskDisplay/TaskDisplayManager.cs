@@ -46,18 +46,27 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	public void ConfirmModifyTask()
 	{
+		Debug.LogWarning("ConfirmModifyTask");
 		if (null == m_ModifyTaskInterfaceHelper)
 		{
 			return;
 		}
 
-		TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
 		TaskBundle bundle = TryFindTaskData(m_SelectedObjTaskID);
-		if (null != bundle && null != visual )
+
+		if (null != bundle  )
 		{
 			// uploading apply change to task
+			TaskBundle modifyBundle = TaskBundleHelper.CopyFromModifyTaskInterfaceHelper( m_ModifyTaskInterfaceHelper , bundle );
 
-			UpdateyDataToVisual(bundle , visual);
+			TaskAddRequest fetchReq = new TaskAddRequest() ;
+			fetchReq.UpdateSerial = TaskMauerStaticData.GetUpdateSerial();
+			fetchReq.ProjectKey = m_ProjectKey; 
+			fetchReq.Task = modifyBundle;
+
+			StartCoroutine(StartRequestModifyTask(fetchReq));
+
+			// UpdateyDataToVisual(bundle , visual);
 		}
 
 		HideModifyTaskInterface();
@@ -477,6 +486,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		}
 	}
+
 
 	void UpdateyDataToVisual( TaskBundle bundle , TaskVisualObj visual )
 	{

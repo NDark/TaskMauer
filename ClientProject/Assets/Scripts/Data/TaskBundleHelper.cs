@@ -11,6 +11,26 @@ public class TaskBundleHelper
 		return ret;
 	}
 
+
+	public static TaskBundle CopyFromModifyTaskInterfaceHelper( ModifyTaskInterfaceHelper ui , TaskBundle srcBundle )
+	{
+		TaskBundle modifyBundle = new TaskBundle();
+		modifyBundle.Data = new TaskData();
+		modifyBundle.Relation = new TaskRelation();
+
+		CopyBundle(srcBundle, modifyBundle);
+
+		modifyBundle.Data.Title = ui.m_TitleInput.text;
+		modifyBundle.Data.Assignee = ui.m_AssigneeInput.text;
+		modifyBundle.Data.Link = ui.m_LinkInput.text;
+
+		int parentID = 0;
+		int.TryParse(ui.m_ParentInput.text, out parentID);
+		modifyBundle.Relation.ParentID = parentID;
+
+		return modifyBundle;
+	}
+
 	public static TaskBundle CopyFromAddTaskInterfaceHelper( AddTaskInterfaceHelper ui )
 	{
 
