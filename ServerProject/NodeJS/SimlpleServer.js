@@ -190,7 +190,7 @@ app.post('/TaskModify', function(req, res, next)
 	
 	
 	
-}
+} ) ;
 
 app.post('/TaskAdd', function(req, res, next) 
 {
