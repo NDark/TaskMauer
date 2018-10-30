@@ -296,7 +296,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 				{
 					'Data' : 
 					{
-						'TaskID' : rows[i].Index
+						'TaskID' : rows[i].TaskIndex
 						,'Title' : rows[i].Title
 						,'Assignee' : rows[i].Assignee
 						,'TimeStamp' : rows[i].TimeStamp
