@@ -183,7 +183,7 @@ app.post('/TaskModify', function(req, res, next)
 					
 				} ) ;
 			}
-		}
+		} ) ;
 				
 	}
 	
