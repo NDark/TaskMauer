@@ -77,6 +77,121 @@ app.all('/test', function(req, res, next)
 	console.log( "url=" + req.url ) ;
 });
 
+
+app.post('/TaskModify', function(req, res, next) 
+{
+	console.log("TaskModify req.body=" + JSON.stringify(req.body) );
+	
+	var updateSerial = req.body.UpdateSerial ;
+	var requestSerial = req.body.RequestSerial ;
+	
+	if( updateSerial < gTemperalArray.length )
+	{
+		// need to fetch first 
+		var contentObj = 
+		{
+			'UpdateSerial' : updateSerial
+			,'RequestSerial' : requestSerial
+		}
+
+		respondObj = 
+		{
+			'Success':false
+			,'Code':1
+			,'Message':'Please fetch to the latest first'
+			,'Key':'TaskModify'
+			,'Content': JSON.stringify( contentObj )
+		}
+
+		res.json( respondObj ) ;
+	}
+	else
+	{
+		var projectKey = req.body.ProjectKey ;
+		var taskBundle = req.body.Task ;
+		
+		var queryInfo = gDataBasePtr.query( 'SELECT * FROM tb_TaskBundles \
+		WHERE ProjectKey = ? AND TaskIndex = ? ',
+		[ projectKey , taskBundle.Data.TaskID ] , 
+		function( err , rows , fields ) 
+		{
+			if( err )
+			{
+				throw err ;
+			}
+			
+			if(0 == rows.length)
+			{
+				
+				var contentObj = 
+				{
+					'UpdateSerial' : updateSerial
+					,'RequestSerial' : requestSerial
+				}
+
+				respondObj = 
+				{
+					'Success':false
+					,'Code':2
+					,'Message':'TaskID does not exist.'
+					,'Key':'TaskModify'
+					,'Content': JSON.stringify( contentObj )
+				}
+
+				res.json( respondObj ) ;
+			}
+			else
+			{
+				gDataBasePtr.query('UPDATE tb_TaskBundles SET \
+					( Title , ProjectKey , Assignee , TimeStamp \
+					, ProgressInt ,ProgressFloat ,Link \
+					, PositionStr , IsPin \
+					, ParentID , RelativesStr, NeedFollowID ) VALUES \
+					( ? , ? , ? , ? \
+					, ? , ? , ? \
+					, ? , ? \
+					, ? , ? , ? ) WHERE ProjectKey = ? AND TaskIndex = ? ', 
+					[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
+					, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
+					, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
+					, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
+					, projectKey , taskBundle.Data.TaskID 
+					],
+					function( iciErr , iciResult )
+				{
+					if ( iciErr ) 
+					{
+						throw iciErr ;
+					}	
+					
+					var contentObj = 
+					{
+						'UpdateSerial' : updateSerial
+						,'RequestSerial' : requestSerial
+					}
+
+					respondObj = 
+					{
+						'Success':true
+						,'Code':0
+						,'Message':''
+						,'Key':'TaskModify'
+						,'Content': JSON.stringify( contentObj )
+					}
+
+					res.json( respondObj ) ;
+					
+				}
+			}
+		}
+				
+	}
+	
+	
+	
+	
+}
+
 app.post('/TaskAdd', function(req, res, next) 
 {
 	// console.log("req.get('Content')" + req.get('Content') );
@@ -126,7 +241,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 			'Success':true
 			,'Code':0
 			,'Message':''
-			,'Key':''
+			,'Key':'TaskAdd'
 			,'Content': JSON.stringify( contentObj )
 		}
 
@@ -209,7 +324,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 				'Success':true
 				,'Code':0
 				,'Message':''
-				,'Key':''
+				,'Key':'FetchTasks'
 				,'Content': JSON.stringify( contentObj )
 			}
 				
@@ -234,7 +349,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 			'Success':true
 			,'Code':0
 			,'Message':''
-			,'Key':''
+			,'Key':'FetchTasks'
 			,'Content': JSON.stringify( contentObj )
 		}
 
