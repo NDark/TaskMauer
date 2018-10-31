@@ -165,7 +165,9 @@ app.post('/TaskModify', function(req, res, next)
 						'UpdateSerial' : updateSerial
 						,'RequestSerial' : requestSerial
 					}
-
+					
+					gTemperalArray.push(taskBundle) ;
+					
 					respondObj = 
 					{
 						'Success':true
