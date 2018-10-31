@@ -167,7 +167,8 @@ app.post('/TaskModify', function(req, res, next)
 					}
 					
 					gTemperalArray.push(taskBundle) ;
-					
+					console.log("gTemperalArray.length=" + gTemperalArray.length );		
+
 					respondObj = 
 					{
 						'Success':true
@@ -227,7 +228,8 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		
 		taskBundle.Data.TaskID = iciResult.insertId ;
 		gTemperalArray.push(taskBundle) ;
-			
+		console.log("gTemperalArray.length=" + gTemperalArray.length );		
+
 		var contentObj = 
 		{
 			'UpdateSerial' : updateSerial
