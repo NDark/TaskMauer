@@ -263,6 +263,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 	}
 
+	/**
+	 * Check m_TaskVisuals Call CreateTaskVisualObjByTaskBundle() to create TaskVisual
+	*/
 	void CheckAndCreateTaskObj(TaskBundle bundleData)
 	{
 		if (null == bundleData)
@@ -271,11 +274,11 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 		if (!m_TaskVisuals.ContainsKey(bundleData.Data.TaskID))
 		{
-			CreateTaskObj(bundleData);
+			CreateTaskVisualObjByTaskBundle(bundleData);
 		}
 	}
 
-	void CreateTaskObj( TaskBundle bundleData )
+	void CreateTaskVisualObjByTaskBundle( TaskBundle bundleData )
 	{
 		TaskVisualObj visual = new TaskVisualObj();
 
@@ -288,14 +291,20 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		visual.m_2DHelper = obj2d.AddComponent<TaskVidual2DObjectHelper>();
 		visual.m_2DHelper.Setup();
-		visual.m_2DHelper.UpdateLinkURL(bundleData.Data.Link);
-		visual.m_2DHelper.UpdateTitle(bundleData.Data.Title);
-		visual.m_2DHelper.UpdateAssignee(bundleData.Data.Assignee);
+		SetTaskVisualDataFromBundle(visual.m_2DHelper, bundleData);
 
 		var task2dupdate = obj2d.AddComponent<Task2DUpdateWith3D>();
 		task2dupdate.Setup(visual.m_3DObj, m_3DCamera);
 
 		m_TaskVisuals.Add(bundleData.Data.TaskID, visual);
+	}
+
+	void SetTaskVisualDataFromBundle( TaskVidual2DObjectHelper taskVisualtwoDHelper, TaskBundle bundle )
+	{
+		taskVisualtwoDHelper.UpdateLinkURL(bundle.Data.Link);
+		taskVisualtwoDHelper.UpdateTitle(bundle.Data.Title);
+		taskVisualtwoDHelper.UpdateAssignee(bundle.Data.Assignee);
+
 	}
 
 	void AddTask( TaskBundle bundleData )
