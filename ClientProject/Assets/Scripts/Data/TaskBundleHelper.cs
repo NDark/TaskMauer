@@ -55,6 +55,11 @@ public class TaskBundleHelper
 		dest.Data.Assignee = input.Data.Assignee;
 		dest.Data.Link = input.Data.Link;
 		dest.Relation.ParentID = input.Relation.ParentID;
+		dest.Relation.RelativesStr = input.Relation.RelativesStr;
+		dest.Relation.NeedFollowID = input.Relation.NeedFollowID;
+
+		dest.Visual.PositionStr = input.Visual.PositionStr;
+		dest.Visual.IsPin = input.Visual.IsPin;
 
 	}
 	public static void TryInitalizeBundleInstance( TaskBundle budnle )

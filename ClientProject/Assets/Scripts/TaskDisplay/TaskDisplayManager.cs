@@ -65,8 +65,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 			fetchReq.Task = modifyBundle;
 
 			StartCoroutine(StartRequestModifyTask(fetchReq));
-
-			// UpdateyDataToVisual(bundle , visual);
 		}
 
 		HideModifyTaskInterface();
@@ -299,12 +297,40 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_TaskVisuals.Add(bundleData.Data.TaskID, visual);
 	}
 
+	void SetTaskVisual3DFromBundle( GameObject obj, TaskBundle bundle )
+	{
+		if (null == obj)
+		{
+			return;
+		}
+
+		if (null == bundle)
+		{
+			return;
+		}
+
+
+		if (bundle.Relation.ParentID != 0)
+		{
+			TaskVisualObj visualParent = TryFindTaskVisual(bundle.Relation.ParentID);
+			if (null != visualParent)
+			{
+				obj.transform.SetParent(visualParent.m_3DObj.transform);
+			}
+		}
+
+		if (bundle.Visual.PositionStr != string.Empty)
+		{
+			obj.transform.localPosition = TaskBundleHelper.ParsePositionStr(bundle.Visual.PositionStr);
+		}
+
+	}
+
 	void SetTaskVisualDataFromBundle( TaskVidual2DObjectHelper taskVisualtwoDHelper, TaskBundle bundle )
 	{
 		taskVisualtwoDHelper.UpdateLinkURL(bundle.Data.Link);
 		taskVisualtwoDHelper.UpdateTitle(bundle.Data.Title);
 		taskVisualtwoDHelper.UpdateAssignee(bundle.Data.Assignee);
-
 	}
 
 	void AddTask( TaskBundle bundleData )
@@ -642,11 +668,25 @@ public partial class TaskDisplayManager : MonoBehaviour
 				TaskVisualObj visual = TryFindTaskVisual(m_SelectedObjTaskID);
 				if ( null != visual && null != bundle)
 				{
-					Vector3 pos = visual.m_3DObj.transform.localPosition;
-					// update packet
+					if (bundle.Visual.IsPin)
+					{
+						// revert position
+						SetTaskVisual3DFromBundle( visual.m_3DObj, bundle);
+					}
+					else
+					{
+						Vector3 pos = visual.m_3DObj.transform.localPosition;
 
-					bundle.Visual.PositionStr = string.Format("{0}{1}{2}",pos.x , pos.y, pos.z  );
-					bundle.Visual.IsPin = true;
+						bundle.Visual.PositionStr = string.Format("{0},{1},{2}",pos.x , pos.y, pos.z  );
+
+						// uploading apply change to task
+						TaskAddRequest fetchReq = new TaskAddRequest() ;
+						fetchReq.UpdateSerial = TaskMauerStaticData.GetUpdateSerial();
+						fetchReq.ProjectKey = m_ProjectKey; 
+						fetchReq.Task = bundle;
+
+						StartCoroutine(StartRequestModifyTask(fetchReq));
+					}
 
 				}
 			}

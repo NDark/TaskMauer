@@ -30,20 +30,36 @@ public partial class TaskDisplayManager : MonoBehaviour
 			}
 			else
 			{
-				bool addRowMaxY = false;
-				sortingArray = CreateSortingArrayForEachRowIndex(m_TaskData , m_TaskCalculator , helper.RowIndex );
-				if (!m_RowToPosY.ContainsKey(helper.RowIndex))
+				Debug.Log("bundle.Visual.PositionStr=" + bundle.Visual.PositionStr);
+
+				if (bundle.Visual.PositionStr != string.Empty)
 				{
-					addRowMaxY = true;
-					m_RowToPosY.Add(helper.RowIndex, m_RowMaxYNow);
+					TaskVisualObj visual = TryFindTaskVisual(bundle.Data.TaskID);
+					if (null!= visual)
+					{
+						SetTaskVisual3DFromBundle(visual.m_3DObj, bundle);
+					}
+
+
 				}
-
-				float maxYSpace = 0;
-
-				SetLocalPositionInArray( sortingArray , m_RowToPosY[helper.RowIndex] , out maxYSpace);
-				if (addRowMaxY)
+				else
 				{
-					m_RowMaxYNow += maxYSpace;
+					bool addRowMaxY = false;
+					sortingArray = CreateSortingArrayForEachRowIndex(m_TaskData , m_TaskCalculator , helper.RowIndex );
+					if (!m_RowToPosY.ContainsKey(helper.RowIndex))
+					{
+						addRowMaxY = true;
+						m_RowToPosY.Add(helper.RowIndex, m_RowMaxYNow);
+					}
+
+					float maxYSpace = 0;
+
+					SetLocalPositionInArray( sortingArray , m_RowToPosY[helper.RowIndex] , out maxYSpace);
+					if (addRowMaxY)
+					{
+						m_RowMaxYNow += maxYSpace;
+					}
+
 				}
 
 			}
