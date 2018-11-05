@@ -17,6 +17,7 @@ public class TaskBundleHelper
 		TaskBundle modifyBundle = new TaskBundle();
 		modifyBundle.Data = new TaskData();
 		modifyBundle.Relation = new TaskRelation();
+		modifyBundle.Visual = new TaskVisual();
 
 		CopyBundle(srcBundle, modifyBundle);
 
@@ -27,6 +28,8 @@ public class TaskBundleHelper
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);
 		modifyBundle.Relation.ParentID = parentID;
+
+		modifyBundle.Visual.IsPin = ui.m_IsPin.isOn;
 
 		return modifyBundle;
 	}

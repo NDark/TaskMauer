@@ -522,29 +522,6 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 	}
 
-
-	void UpdateyDataToVisual( TaskBundle bundle , TaskVisualObj visual )
-	{
-		if (null == bundle)
-		{
-			return;
-		}
-		if (null == visual)
-		{
-			return;
-		}
-
-		bundle.Data.Title = m_ModifyTaskInterfaceHelper.m_TitleInput.text;
-		bundle.Data.Assignee = m_ModifyTaskInterfaceHelper.m_AssigneeInput.text;
-		bundle.Data.Link = m_ModifyTaskInterfaceHelper.m_LinkInput.text;
-		int.TryParse(m_ModifyTaskInterfaceHelper.m_ParentInput.text, out bundle.Relation.ParentID);
-
-		visual.m_2DHelper.UpdateTitle( bundle.Data.Title ) ;
-		visual.m_2DHelper.UpdateAssignee( bundle.Data.Assignee ) ;
-		visual.m_2DHelper.UpdateLinkURL( bundle.Data.Link ) ;
-
-	}
-
 	void FetchDataToEditor( TaskBundle bundle )
 	{
 		Debug.Log("FetchDataToEditor");
@@ -562,6 +539,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_ModifyTaskInterfaceHelper.m_AssigneeInput.text = bundle.Data.Assignee ;
 		m_ModifyTaskInterfaceHelper.m_LinkInput.text = bundle.Data.Link;
 		m_ModifyTaskInterfaceHelper.m_ParentInput.text = bundle.Relation.ParentID.ToString();
+		m_ModifyTaskInterfaceHelper.m_IsPin.isOn = bundle.Visual.IsPin;
 
 
 	}
