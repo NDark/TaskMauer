@@ -434,11 +434,11 @@ public partial class TaskDisplayManager : MonoBehaviour
 		if (m_MouseIsDownTimer.IsActive
 			&& m_MouseIsDownTimer.IsReady(Time.time ))
 		{
-			if (IsSelected())
+			if (IsSelected() && IsPressedTheSameAsSelect() )
 			{
 				DragSelectObject(Input.mousePosition);
 			}
-			else
+			else if( IsUIEmpty() )
 			{
 				DragScene(Input.mousePosition);
 			}
@@ -447,6 +447,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 		if( Input.GetMouseButtonDown(0))
 		{
 			m_MouseIsDownTimer.Rewind(Time.time);
+
+			// check click
+			m_PressedObjTaskID = CheckClickVisual( Input.mousePosition ) ;
 
 		}
 
@@ -672,12 +675,20 @@ public partial class TaskDisplayManager : MonoBehaviour
 		}
 
 	}
+
+	bool IsPressedTheSameAsSelect()
+	{
+		return m_SelectedObjTaskID == m_PressedObjTaskID;
+	}
+
 	bool IsSelected()
 	{
 		return (0 != m_SelectedObjTaskID);
 	}
 	bool m_SelectedObjDraged = false ;
 	int m_SelectedObjTaskID = 0 ;
+	int m_PressedObjTaskID = 0 ;
+
 	CountDownTimer m_MouseIsDownTimer = new CountDownTimer();
 	Vector3 m_InputMousePositionPrevious = Vector3.zero ;
 
