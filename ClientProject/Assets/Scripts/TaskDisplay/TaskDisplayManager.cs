@@ -1,4 +1,4 @@
-﻿// #define ENABLE_LOCAL_DATA 
+﻿#define ENABLE_LOCAL_DATA 
 
 using System.Collections;
 using System.Collections.Generic;
@@ -105,13 +105,17 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_AddTaskInterfaceHelper.gameObject.SetActive(false);
 	}
 
+	public void SetCameraZoomMax()
+	{
+		CalculateCameraZoomToAll();
+	}
+
 	// Use this for initialization
 	void Start () 
 	{
 		SetupStructrue();
 
 		CalculateUnAssignedVisualTask();
-		CalculateCameraZoomToAll();
 
 	}
 
