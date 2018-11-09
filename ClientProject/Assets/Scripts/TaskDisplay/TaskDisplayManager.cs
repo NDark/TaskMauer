@@ -119,6 +119,16 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 	}
 
+	void TaskVisual2DObjectOnPressSwitchButton()
+	{
+		m_ShowPartialUI = !m_ShowPartialUI;
+		var iEnum = m_TaskVisuals.GetEnumerator();
+		while (iEnum.MoveNext())
+		{
+			iEnum.Current.Value.m_2DHelper.ShowPartUI(m_ShowPartialUI);
+		}
+	}
+
 	public TaskVisualObj TryFindTaskVisual( int id )
 	{
 		if (m_TaskVisuals.ContainsKey(id))
@@ -293,6 +303,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 
 		visual.m_2DHelper = obj2d.AddComponent<TaskVidual2DObjectHelper>();
 		visual.m_2DHelper.Setup();
+		visual.m_2DHelper.OnPressSwitchButton += TaskVisual2DObjectOnPressSwitchButton;
 		SetTaskVisualDataFromBundle(visual.m_2DHelper, bundleData);
 
 		var task2dupdate = obj2d.AddComponent<Task2DUpdateWith3D>();
@@ -712,5 +723,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 	Dictionary<int, TaskAddRequest > m_RequestList = new Dictionary<int, TaskAddRequest>() ;
 
 	bool m_UIAccessing = false ;
+
+	bool m_ShowPartialUI = true ;
 }
 

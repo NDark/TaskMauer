@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class TaskVidual2DObjectHelper : MonoBehaviour 
 {
-	
+	public System.Action OnPressSwitchButton = new System.Action( () => {} );
+
 	public RectTransform SelfRect 
 	{ 
 		get {
@@ -43,6 +44,14 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 		}
 	}
 
+	public void SwitchSize()
+	{
+		if (null != m_SwitchButton)
+		{
+			OnPressSwitchButton();
+		}
+	}
+
 	public void UpdateLinkURL( string url )
 	{
 		m_LinkURL = url;
@@ -68,14 +77,24 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 	{
 		m_Self = this.GetComponent<RectTransform>();
 		m_Title = UnityFind.ComponentFind<Text>(this.transform, "Title");
+		m_SwitchButton = UnityFind.ComponentFind<Button>(this.transform, "Title/SwitchButton");
+		if (null != m_SwitchButton)
+		{
+			m_SwitchButton.onClick.AddListener(delegate {SwitchSize();} );
+		}
 		m_Assignee = UnityFind.ComponentFind<Text>(this.transform, "Assignee");
-		m_LinkButton = UnityFind.ComponentFind<Button>(this.transform, "LinkButton");
+		m_LinkButton = UnityFind.ComponentFind<Button>(this.transform, "Assignee/LinkButton");
 		if (null != m_LinkButton)
 		{
 			m_OpenBrowser = m_LinkButton.gameObject.AddComponent<OnClickOpenBrower>();
 			m_LinkButton.onClick.AddListener(delegate {PressButton();} );
 		}
 		m_Initialzied = true;
+	}
+
+	public void ShowPartUI( bool visible  )
+	{
+		m_Assignee.gameObject.SetActive(visible);
 	}
 
 	// Use this for initialization
@@ -91,6 +110,7 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 	RectTransform m_Self ;
 	string m_LinkURL = string.Empty ;
 	Button m_LinkButton = null ;
+	Button m_SwitchButton = null ;
 	OnClickOpenBrower m_OpenBrowser =null; 
 	Text m_Title = null ;
 	Text m_Assignee = null ;
