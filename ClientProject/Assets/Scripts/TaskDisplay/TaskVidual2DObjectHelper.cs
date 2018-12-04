@@ -73,8 +73,23 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 		}
 	}
 
+
+	public void UpdateColor( int type )
+	{
+		if (m_ColorImage)
+		{
+			Color color = m_ColorImage.color;
+			float alpha = color.a;
+			color = TaskTypeColorMapHelper.GetColor(type);
+			color.a = alpha;
+			m_ColorImage.color = color ;
+		}
+	}
+
+
 	public void Setup()
 	{
+		m_ColorImage = this.GetComponent<Image>();
 		m_Self = this.GetComponent<RectTransform>();
 		m_Title = UnityFind.ComponentFind<Text>(this.transform, "Title");
 		m_SwitchButton = UnityFind.ComponentFind<Button>(this.transform, "Title/SwitchButton");
@@ -107,6 +122,7 @@ public class TaskVidual2DObjectHelper : MonoBehaviour
 		
 	}
 
+	Image m_ColorImage ;
 	RectTransform m_Self ;
 	string m_LinkURL = string.Empty ;
 	Button m_LinkButton = null ;

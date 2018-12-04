@@ -24,6 +24,7 @@ public class TaskBundleHelper
 		modifyBundle.Data.Title = ui.m_TitleInput.text;
 		modifyBundle.Data.Assignee = ui.m_AssigneeInput.text;
 		modifyBundle.Data.Link = ui.m_LinkInput.text;
+		modifyBundle.Data.Type = ui.m_TypeDropDown.value;
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);
@@ -44,6 +45,7 @@ public class TaskBundleHelper
 		bundleData.Data.Title = ui.m_TitleInput.text;
 		bundleData.Data.Assignee = ui.m_AssigneeInput.text;
 		bundleData.Data.Link = ui.m_LinkInput.text;
+		bundleData.Data.Type = ui.m_TypeDropDown.value;
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);

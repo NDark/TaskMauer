@@ -191,6 +191,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			task1ID = bundleData.Data.TaskID;
 			bundleData.Data.Title = "Task1";
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -200,6 +201,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.Title = "Task2";
 			bundleData.Data.Assignee = "Member1";
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -209,6 +211,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.Title = "Task3";
 			bundleData.Relation.ParentID = task1ID;// task1 
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -222,6 +225,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			relatives[0].ID = 0;
 			bundleData.Relation.SetRelatives(relatives);
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -231,6 +235,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.Title = "Task5";
 			bundleData.Data.Assignee = "Member2";
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -240,6 +245,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.Title = "Task6";
 			bundleData.Data.Assignee = "Member3";
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
 		}
@@ -250,6 +256,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task7";
 			bundleData.Data.Link = "www.google.com.tw";
+			bundleData.Data.Type = (int)TaskType.Art;
 			bundleData.Relation.ParentID = task3ID;// task3ID 
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
@@ -259,6 +266,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task8";
+			bundleData.Data.Type = (int)TaskType.Art;
 			bundleData.Visual.PositionStr = "2.0,0.5,0";
 			CheckAndCreateTaskObj(bundleData);
 			AddTask(bundleData);
@@ -268,6 +276,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 			TaskBundle bundleData = TaskBundleHelper.CreateABundleInstance();
 			bundleData.Data.TaskID = id++;
 			bundleData.Data.Title = "Task9";
+			bundleData.Data.Type = (int)TaskType.Art;
 			bundleData.Visual.PositionStr = "3.0,0.5,0";
 			bundleData.Relation.ParentID = task2ID;// task2ID 
 			CheckAndCreateTaskObj(bundleData);
@@ -346,6 +355,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		taskVisualtwoDHelper.UpdateLinkURL(bundle.Data.Link);
 		taskVisualtwoDHelper.UpdateTitle(bundle.Data.Title);
 		taskVisualtwoDHelper.UpdateAssignee(bundle.Data.Assignee);
+		taskVisualtwoDHelper.UpdateColor(bundle.Data.Type);
 	}
 
 	void AddTask( TaskBundle bundleData )

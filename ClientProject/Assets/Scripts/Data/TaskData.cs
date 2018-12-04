@@ -9,6 +9,8 @@ public class TaskData
 	public int ProgressInt;
 	public float ProgressFloat;
 	public string Link= string.Empty;
+
+	public int Type;
 }
 
 [System.Serializable]
