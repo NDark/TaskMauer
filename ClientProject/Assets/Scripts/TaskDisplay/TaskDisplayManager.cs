@@ -1,4 +1,4 @@
-﻿#define ENABLE_LOCAL_DATA 
+﻿// #define ENABLE_LOCAL_DATA 
 
 using System.Collections;
 using System.Collections.Generic;
@@ -566,6 +566,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_ModifyTaskInterfaceHelper.m_TitleInput.text = bundle.Data.Title ;
 		m_ModifyTaskInterfaceHelper.m_AssigneeInput.text = bundle.Data.Assignee ;
 		m_ModifyTaskInterfaceHelper.m_LinkInput.text = bundle.Data.Link;
+		m_ModifyTaskInterfaceHelper.m_TypeDropDown.value = bundle.Data.Type;
 		m_ModifyTaskInterfaceHelper.m_ParentInput.text = bundle.Relation.ParentID.ToString();
 		m_ModifyTaskInterfaceHelper.m_IsPin.isOn = bundle.Visual.IsPin;
 

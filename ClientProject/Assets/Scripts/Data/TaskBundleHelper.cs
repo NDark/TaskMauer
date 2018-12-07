@@ -59,6 +59,7 @@ public class TaskBundleHelper
 		dest.Data.Title = input.Data.Title; 
 		dest.Data.Assignee = input.Data.Assignee;
 		dest.Data.Link = input.Data.Link;
+		dest.Data.Type = input.Data.Type;
 		dest.Relation.ParentID = input.Relation.ParentID;
 		dest.Relation.RelativesStr = input.Relation.RelativesStr;
 		dest.Relation.NeedFollowID = input.Relation.NeedFollowID;
