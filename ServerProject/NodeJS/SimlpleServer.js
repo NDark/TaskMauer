@@ -145,10 +145,12 @@ app.post('/TaskModify', function(req, res, next)
 				gDataBasePtr.query('UPDATE tb_TaskBundles SET \
 					 Title = ? , ProjectKey = ? , Assignee = ? , TimeStamp = ? \
 					, ProgressInt = ? ,ProgressFloat = ? ,Link = ? \
+					, Type = ? \
 					, PositionStr = ? , IsPin= ?  \
 					, ParentID = ? , RelativesStr= ? , NeedFollowID = ? WHERE ProjectKey = ? AND TaskIndex = ? ', 
 					[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 					, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
+					, taskBundle.Data.Type
 					, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
 					, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
 					, projectKey , taskBundle.Data.TaskID 
@@ -208,6 +210,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 	gDataBasePtr.query('INSERT INTO tb_TaskBundles \
 		( Title , ProjectKey , Assignee , TimeStamp \
 		, ProgressInt ,ProgressFloat ,Link \
+		, Type \
 		, PositionStr , IsPin \
 		, ParentID , RelativesStr, NeedFollowID ) VALUES \
 		( ? , ? , ? , ? \
@@ -216,6 +219,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		, ? , ? , ? )', 
 		[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
+		, taskBundle.Data.Type
 		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
 		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
 		],
@@ -303,6 +307,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 						,'ProgressInt' : rows[i].ProgressInt
 						,'ProgressFloat' : rows[i].ProgressFloat
 						,'Link' : rows[i].Link
+						,'Type' : rows[i].Type
 					}
 					,'Visual' :
 					{
