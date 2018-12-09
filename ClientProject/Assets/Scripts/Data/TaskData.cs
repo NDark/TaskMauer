@@ -31,14 +31,33 @@ public class TaskRelation
 	{
 		if (null == Relatives)
 		{
-			this.Relatives = UnityEngine.JsonUtility.FromJson<TaskRelative[]>(RelativesStr);
+			this.Relatives = new TaskRelative[0];
+
+			try 	
+			{
+				this.Relatives = UnityEngine.JsonUtility.FromJson<TaskRelative[]>(this.RelativesStr);
+			}
+			catch 
+			{
+				
+			}
 		}
 		return this.Relatives;
 	}
-	public void SetRelatives( TaskRelative [] set )
+
+	public void SetRelatives( TaskRelative [] setVec )
 	{
-		this.Relatives = set;
-		this.RelativesStr = UnityEngine.JsonUtility.ToJson(this.Relatives);
+		
+		this.Relatives = setVec;
+
+		if (null == setVec || setVec.Length == 0)
+		{
+			this.RelativesStr = "";
+		}
+		else
+		{
+			this.RelativesStr = UnityEngine.JsonUtility.ToJson(this.Relatives);
+		}
 	}
 	TaskRelative [] Relatives ;
 }

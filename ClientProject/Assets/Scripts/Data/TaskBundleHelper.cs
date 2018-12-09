@@ -61,7 +61,7 @@ public class TaskBundleHelper
 		dest.Data.Link = input.Data.Link;
 		dest.Data.Type = input.Data.Type;
 		dest.Relation.ParentID = input.Relation.ParentID;
-		dest.Relation.RelativesStr = input.Relation.RelativesStr;
+		dest.Relation.SetRelatives( input.Relation.GetTaskRelative() ) ;
 		dest.Relation.NeedFollowID = input.Relation.NeedFollowID;
 
 		dest.Visual.PositionStr = input.Visual.PositionStr;
