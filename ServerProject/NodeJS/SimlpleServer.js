@@ -152,7 +152,7 @@ app.post('/TaskModify', function(req, res, next)
 					, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 					, taskBundle.Data.Type
 					, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
-					, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
+					, taskBundle.Relation.ParentID , taskBundle.Relation.RelativesStr , taskBundle.Relation.NeedFollowID 
 					, projectKey , taskBundle.Data.TaskID 
 					],
 					function( iciErr , iciResult )
@@ -222,7 +222,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		, taskBundle.Data.ProgressInt, taskBundle.Data.ProgressFloat, taskBundle.Data.Link 
 		, taskBundle.Data.Type
 		, taskBundle.Visual.PositionStr , taskBundle.Visual.IsPin 
-		, taskBundle.Relation.ParentID , JSON.stringify(taskBundle.Relation.RelativesStr) , taskBundle.Relation.NeedFollowID 
+		, taskBundle.Relation.ParentID , taskBundle.Relation.RelativesStr , taskBundle.Relation.NeedFollowID 
 		],
 		function( iciErr , iciResult )
 	{
