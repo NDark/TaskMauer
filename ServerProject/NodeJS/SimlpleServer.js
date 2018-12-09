@@ -197,7 +197,7 @@ app.post('/TaskAdd', function(req, res, next)
 {
 	// console.log("req.get('Content')" + req.get('Content') );
 	// console.log("req.get('Author')" + req.get('Author') );
-	console.log("TaskAdd req.body=" + JSON.stringify(req.body) );
+	console.log("TaskAdd() req.body=" + JSON.stringify(req.body) );
 	/*	
 req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":"","Assignee":"","TimeStamp":0,"ProgressInt":0,"ProgressFloat":0,"Link":""},"Visual":{"PositionStr":"","IsPin":false},"Relation":{"ParentID":0,"Relatives":[],"NeedFollowID":0},"Relative":{"ID":0,"Type":""}}}
 	*/
@@ -215,6 +215,7 @@ req.body={"UpdateSerial":0,"RequestSerial":0,"Task":{"Data":{"TaskID":0,"Title":
 		, ParentID , RelativesStr, NeedFollowID ) VALUES \
 		( ? , ? , ? , ? \
 		, ? , ? , ? \
+		, ? \
 		, ? , ? \
 		, ? , ? , ? )', 
 		[ taskBundle.Data.Title , projectKey , taskBundle.Data.Assignee, taskBundle.Data.TimeStamp
