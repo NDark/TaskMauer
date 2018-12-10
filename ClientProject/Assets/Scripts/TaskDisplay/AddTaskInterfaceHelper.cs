@@ -9,6 +9,7 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 	public InputField m_AssigneeInput ;
 	public InputField m_LinkInput ;
 	public Dropdown m_TypeDropDown;
+	public Slider m_ProgressFloatSlider;
 	public InputField m_ParentInput ;
 
 

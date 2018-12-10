@@ -25,6 +25,7 @@ public class TaskBundleHelper
 		modifyBundle.Data.Assignee = ui.m_AssigneeInput.text;
 		modifyBundle.Data.Link = ui.m_LinkInput.text;
 		modifyBundle.Data.Type = ui.m_TypeDropDown.value;
+		modifyBundle.Data.ProgressFloat = ui.m_ProgressFloatSlider.value;
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);
@@ -46,6 +47,7 @@ public class TaskBundleHelper
 		bundleData.Data.Assignee = ui.m_AssigneeInput.text;
 		bundleData.Data.Link = ui.m_LinkInput.text;
 		bundleData.Data.Type = ui.m_TypeDropDown.value;
+		bundleData.Data.ProgressFloat = ui.m_ProgressFloatSlider.value;
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);
@@ -60,6 +62,8 @@ public class TaskBundleHelper
 		dest.Data.Assignee = input.Data.Assignee;
 		dest.Data.Link = input.Data.Link;
 		dest.Data.Type = input.Data.Type;
+		dest.Data.ProgressFloat = input.Data.ProgressFloat;
+		dest.Data.ProgressInt = input.Data.ProgressInt;
 		dest.Relation.ParentID = input.Relation.ParentID;
 		dest.Relation.SetRelatives( input.Relation.GetTaskRelative() ) ;
 		dest.Relation.NeedFollowID = input.Relation.NeedFollowID;
