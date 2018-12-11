@@ -20,6 +20,16 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 		OnPressAddButton();
 	}
 
+	public void Clear()
+	{
+		m_TitleInput.text = "";
+		m_AssigneeInput.text = "";
+		m_LinkInput.text = "";
+		m_TypeDropDown.value = 0;
+		m_ProgressFloatSlider.value = 0;
+		m_ParentInput.text = "";
+	}
+
 	// Use this for initialization
 	void Start () {
 		
