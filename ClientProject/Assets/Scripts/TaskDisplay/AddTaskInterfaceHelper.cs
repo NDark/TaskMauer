@@ -9,15 +9,27 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 	public InputField m_AssigneeInput ;
 	public InputField m_LinkInput ;
 	public Dropdown m_TypeDropDown;
+	public Text m_ProgressText;
 	public Slider m_ProgressFloatSlider;
 	public InputField m_ParentInput ;
 
 
 	public System.Action OnPressAddButton = new System.Action( () => {} );
 
+	public void ProgressOnChanged()
+	{
+		m_ProgressText.text = ((int)(m_ProgressFloatSlider.value)).ToString() ;
+	}
+
 	public void PressAddTask()
 	{
 		OnPressAddButton();
+	}
+
+	public void SetProgressFloat( float value)
+	{
+		m_ProgressFloatSlider.value = value;
+		m_ProgressText.text = ((int)(value)).ToString() ;
 	}
 
 	public void Clear()
@@ -26,7 +38,7 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 		m_AssigneeInput.text = "";
 		m_LinkInput.text = "";
 		m_TypeDropDown.value = 0;
-		m_ProgressFloatSlider.value = 0;
+		SetProgressFloat(0);
 		m_ParentInput.text = "";
 	}
 

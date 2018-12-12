@@ -1447,7 +1447,18 @@ MonoBehaviour:
   m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 114414490967991130}
+        m_MethodName: ProgressOnChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_TypeName: UnityEngine.UI.Slider+SliderEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &114167608236379630
@@ -1825,6 +1836,7 @@ MonoBehaviour:
   m_AssigneeInput: {fileID: 114074328265177276}
   m_LinkInput: {fileID: 114469018905508208}
   m_TypeDropDown: {fileID: 114263316467928322}
+  m_ProgressText: {fileID: 114775795345061726}
   m_ProgressFloatSlider: {fileID: 114165629135917044}
   m_ParentInput: {fileID: 114125319095889560}
 --- !u!114 &114429523271847436
@@ -2566,7 +2578,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Progress
+  m_Text: 
 --- !u!114 &114786772341825332
 MonoBehaviour:
   m_ObjectHideFlags: 1
