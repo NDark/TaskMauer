@@ -25,7 +25,9 @@ public class TaskBundleHelper
 		modifyBundle.Data.Assignee = ui.m_AssigneeInput.text;
 		modifyBundle.Data.Link = ui.m_LinkInput.text;
 		modifyBundle.Data.Type = ui.m_TypeDropDown.value;
+		modifyBundle.Data.ProgressInt = ui.m_ProgressIntDropDown.value;
 		modifyBundle.Data.ProgressFloat = ui.m_ProgressFloatSlider.value;
+
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);
@@ -47,7 +49,9 @@ public class TaskBundleHelper
 		bundleData.Data.Assignee = ui.m_AssigneeInput.text;
 		bundleData.Data.Link = ui.m_LinkInput.text;
 		bundleData.Data.Type = ui.m_TypeDropDown.value;
+		bundleData.Data.ProgressInt = ui.m_ProgressIntDropDown.value;
 		bundleData.Data.ProgressFloat = ui.m_ProgressFloatSlider.value;
+
 
 		int parentID = 0;
 		int.TryParse(ui.m_ParentInput.text, out parentID);

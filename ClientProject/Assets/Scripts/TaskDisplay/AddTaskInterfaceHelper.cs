@@ -9,6 +9,7 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 	public InputField m_AssigneeInput ;
 	public InputField m_LinkInput ;
 	public Dropdown m_TypeDropDown;
+	public Dropdown m_ProgressIntDropDown;
 	public Text m_ProgressText;
 	public Slider m_ProgressFloatSlider;
 	public InputField m_ParentInput ;
@@ -38,6 +39,7 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 		m_AssigneeInput.text = "";
 		m_LinkInput.text = "";
 		m_TypeDropDown.value = 0;
+		m_ProgressIntDropDown.value = 0;
 		SetProgressFloat(0);
 		m_ParentInput.text = "";
 	}

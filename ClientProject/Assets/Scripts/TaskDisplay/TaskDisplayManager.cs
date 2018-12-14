@@ -1,4 +1,4 @@
-﻿// #define ENABLE_LOCAL_DATA 
+﻿#define ENABLE_LOCAL_DATA 
 
 using System.Collections;
 using System.Collections.Generic;
@@ -568,6 +568,7 @@ public partial class TaskDisplayManager : MonoBehaviour
 		m_ModifyTaskInterfaceHelper.m_LinkInput.text = bundle.Data.Link;
 		m_ModifyTaskInterfaceHelper.m_TypeDropDown.value = bundle.Data.Type;
 		m_ModifyTaskInterfaceHelper.SetProgressFloat( bundle.Data.ProgressFloat );
+		m_ModifyTaskInterfaceHelper.m_ProgressIntDropDown.value = bundle.Data.ProgressInt;
 		m_ModifyTaskInterfaceHelper.m_ParentInput.text = bundle.Relation.ParentID.ToString();
 		m_ModifyTaskInterfaceHelper.m_IsPin.isOn = bundle.Visual.IsPin;
 
