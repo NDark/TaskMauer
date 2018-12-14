@@ -113,6 +113,9 @@ public partial class TaskDisplayManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
 	{
+		m_AddTaskInterfaceHelper.ResetProgressIntDropDownList();
+		m_ModifyTaskInterfaceHelper.ResetProgressIntDropDownList();
+
 		SetupStructrue();
 
 		CalculateUnAssignedVisualTask();

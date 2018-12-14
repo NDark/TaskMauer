@@ -20,14 +20,14 @@ public static class ProgressIntTypeStringMapHelper
 	{
 		if (s_ProgressToStringMap.Count <= 0)
 		{
-			s_ProgressToStringMap.Add((int)ProgressIntType.UnActive, "UnActive");
+			s_ProgressToStringMap.Add((int)ProgressIntType.UnActive, "Un Active");
 			s_ProgressToStringMap.Add((int)ProgressIntType.Assigned, "Assigned");
 			s_ProgressToStringMap.Add((int)ProgressIntType.Confirmed, "Confirmed");
-			s_ProgressToStringMap.Add((int)ProgressIntType.InProgress, "InProgress");
+			s_ProgressToStringMap.Add((int)ProgressIntType.InProgress, "In Progress");
 			s_ProgressToStringMap.Add((int)ProgressIntType.Solved, "Solved");
 			s_ProgressToStringMap.Add((int)ProgressIntType.Validated, "Validated");
 			s_ProgressToStringMap.Add((int)ProgressIntType.Close, "Close");
-			s_ProgressToStringMap.Add((int)ProgressIntType.OnHold, "OnHold");
+			s_ProgressToStringMap.Add((int)ProgressIntType.OnHold, "On Hold");
 
 		}
 	}

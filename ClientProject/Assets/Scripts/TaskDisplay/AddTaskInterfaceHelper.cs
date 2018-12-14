@@ -33,6 +33,17 @@ public class AddTaskInterfaceHelper : MonoBehaviour
 		m_ProgressText.text = ((int)(value)).ToString() ;
 	}
 
+	public void ResetProgressIntDropDownList()
+	{
+		m_ProgressIntDropDown.ClearOptions();
+		List<string> list = new List<string>();
+		for (int i = 0; i <= (int) ProgressIntType.OnHold; ++i)
+		{
+			list.Add(ProgressIntTypeStringMapHelper.GetString(i));
+		}
+		m_ProgressIntDropDown.AddOptions(list);
+	}
+
 	public void Clear()
 	{
 		m_TitleInput.text = "";
